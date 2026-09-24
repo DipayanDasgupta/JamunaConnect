@@ -1,0 +1,34 @@
+:root {
+    --jamuna: #1f6f4a;
+}
+
+.navbar.bg-dark {
+    background-color: var(--jamuna) !important;
+}
+
+.btn-primary {
+    --bs-btn-bg: var(--jamuna);
+    --bs-btn-border-color: var(--jamuna);
+    --bs-btn-hover-bg: #185a3b;
+    --bs-btn-hover-border-color: #185a3b;
+}
+
+a {
+    text-decoration: none;
+}
+
+body {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+main {
+    flex: 1;
+}
+
+.badge.status-OPEN { background-color: #dc3545 !important; }
+.badge.status-ACKNOWLEDGED { background-color: #fd7e14 !important; }
+.badge.status-IN_PROGRESS { background-color: #0d6efd !important; }
+.badge.status-RESOLVED { background-color: #198754 !important; }
+.badge.status-CLOSED { background-color: #6c757d !important; }
