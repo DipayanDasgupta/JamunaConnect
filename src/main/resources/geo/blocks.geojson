@@ -1,0 +1,65 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": { "block": "A", "room": "A101", "label": "A Block, ground" },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[
+          [80.23330, 12.99140], [80.23360, 12.99140],
+          [80.23360, 12.99170], [80.23330, 12.99170],
+          [80.23330, 12.99140]
+        ]]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": { "block": "A", "room": "A102", "label": "A Block, ground" },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[
+          [80.23360, 12.99140], [80.23390, 12.99140],
+          [80.23390, 12.99170], [80.23360, 12.99170],
+          [80.23360, 12.99140]
+        ]]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": { "block": "B", "room": "B101", "label": "B Block" },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[
+          [80.23330, 12.99170], [80.23360, 12.99170],
+          [80.23360, 12.99200], [80.23330, 12.99200],
+          [80.23330, 12.99170]
+        ]]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": { "block": "B", "room": "B203", "label": "B Block" },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[
+          [80.23360, 12.99170], [80.23390, 12.99170],
+          [80.23390, 12.99200], [80.23360, 12.99200],
+          [80.23360, 12.99170]
+        ]]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": { "block": "C", "room": "C301", "label": "C Block" },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[
+          [80.23330, 12.99200], [80.23360, 12.99200],
+          [80.23360, 12.99230], [80.23330, 12.99230],
+          [80.23330, 12.99200]
+        ]]
+      }
+    }
+  ]
+}
