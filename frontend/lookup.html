@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <title>Room Lookup &middot; JamunaConnect</title>
+    <link rel="stylesheet" href="/css/app.css"/>
+</head>
+<body>
+<nav class="nav">
+    <a class="brand" href="/">JamunaConnect</a>
+    <a href="/contacts">Contacts</a>
+    <a href="/lookup">Room Lookup</a>
+    <a href="/map">Campus Map</a>
+    <a href="/complaints/new">File a Complaint</a>
+    <a href="/staff/login">Staff</a>
+</nav>
+<main>
+    <h1>Room &amp; resident lookup</h1>
+    <p class="muted">Misspell it if you like: the backend ranks results with pg_trgm on PostgreSQL.</p>
+    <form id="lookup-form" class="row">
+        <div>
+            <label for="query">Search</label>
+            <input id="query" name="query" placeholder="e.g. A101, or a half-remembered name" autocomplete="off"/>
+        </div>
+        <div style="flex:0 0 auto;">
+            <button class="btn" type="submit">Search</button>
+        </div>
+    </form>
+    <div id="results" style="margin-top:1.5rem;"></div>
+</main>
+<footer>JamunaConnect &middot; CS5013 Team 59</footer>
+<script src="/js/lookup.js"></script>
+</body>
+</html>

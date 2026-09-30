@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <title>Campus Map &middot; JamunaConnect</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+    <link rel="stylesheet" href="/css/app.css"/>
+</head>
+<body>
+<nav class="nav">
+    <a class="brand" href="/">JamunaConnect</a>
+    <a href="/contacts">Contacts</a>
+    <a href="/lookup">Room Lookup</a>
+    <a href="/map">Campus Map</a>
+    <a href="/complaints/new">File a Complaint</a>
+    <a href="/staff/login">Staff</a>
+</nav>
+<main>
+    <h1>Jamuna campus map</h1>
+    <p class="muted">Click a block; the popup calls the same <code>/api/rooms</code> endpoint as
+        the search box, so both share one source of truth.</p>
+    <div id="map"></div>
+</main>
+<footer>JamunaConnect &middot; CS5013 Team 59</footer>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="/js/map.js"></script>
+</body>
+</html>

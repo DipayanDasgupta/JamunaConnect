@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <title>File a Complaint &middot; JamunaConnect</title>
+    <link rel="stylesheet" href="/css/app.css"/>
+</head>
+<body>
+<nav class="nav">
+    <a class="brand" href="/">JamunaConnect</a>
+    <a href="/contacts">Contacts</a>
+    <a href="/lookup">Room Lookup</a>
+    <a href="/map">Campus Map</a>
+    <a href="/complaints/new">File a Complaint</a>
+    <a href="/staff/login">Staff</a>
+</nav>
+<main style="max-width:720px;">
+    <h1>File a complaint or query</h1>
+    <div id="alert" class="alert hidden"></div>
+    <form id="complaint-form" novalidate>
+        <label for="submitterName">Your name</label>
+        <input id="submitterName" name="submitterName" maxlength="128" required/>
+
+        <label for="roomNumber">Room number</label>
+        <input id="roomNumber" name="roomNumber" placeholder="A101" required/>
+
+        <label for="category">Category</label>
+        <select id="category" name="category" required>
+            <option value="WATER">WATER</option>
+            <option value="ELECTRICAL">ELECTRICAL</option>
+            <option value="CARPENTRY">CARPENTRY</option>
+            <option value="CLEANING">CLEANING</option>
+            <option value="INTERNET">INTERNET</option>
+            <option value="OTHER">OTHER</option>
+        </select>
+
+        <label for="description">Description</label>
+        <textarea id="description" name="description" rows="5" maxlength="2000" required></textarea>
+
+        <div style="margin-top:1rem;">
+            <button class="btn" type="submit">Submit complaint</button>
+        </div>
+    </form>
+</main>
+<footer>JamunaConnect &middot; CS5013 Team 59</footer>
+<script src="/js/complaint-form.js"></script>
+</body>
+</html>

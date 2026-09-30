@@ -1,0 +1,51 @@
+name: ci
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_DB: jamuna
+          POSTGRES_USER: jamuna
+          POSTGRES_PASSWORD: jamuna
+        ports: ["5432:5432"]
+        options: >-
+          --health-cmd "pg_isready -U jamuna"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "21"
+          cache: maven
+      - name: Unit + integration tests
+        run: mvn -B verify
+        env:
+          DATABASE_URL: jdbc:postgresql://localhost:5432/jamuna
+          DATABASE_USERNAME: jamuna
+          DATABASE_PASSWORD: jamuna
+      - name: Build jar
+        run: mvn -B -DskipTests package
+      - uses: actions/upload-artifact@v4
+        with:
+          name: jamunaconnect-jar
+          path: target/jamunaconnect-*.jar
+
+  # Staging auto-deploys from main; production is promoted manually.
+  deploy-staging:
+    needs: build
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    environment: staging
+    steps:
+      - run: echo "Deploy jar to staging host here (Render/Fly.io) using environment secrets."
