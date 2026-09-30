@@ -41,11 +41,49 @@ jobs:
           name: jamunaconnect-jar
           path: target/jamunaconnect-*.jar
 
-  # Staging auto-deploys from main; production is promoted manually.
-  deploy-staging:
+  # Presentation layer auto-deploys to Vercel from main.
+  deploy-frontend:
     needs: build
     if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
-    environment: staging
+    defaults:
+      run:
+        working-directory: frontend
     steps:
-      - run: echo "Deploy jar to staging host here (Render/Fly.io) using environment secrets."
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Deploy to Vercel
+        run: |
+          npm i -g vercel@latest
+          vercel pull --yes --environment=production --token="$VERCEL_TOKEN"
+          vercel build --prod --token="$VERCEL_TOKEN"
+          vercel deploy --prebuilt --prod --token="$VERCEL_TOKEN"
+        env:
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+          VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+
+  # Backend auto-deploys to the AWS instance from main.
+  deploy-backend:
+    needs: build
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: jamunaconnect-jar
+          path: dist
+      - name: Upload jar and restart service
+        env:
+          SSH_KEY: ${{ secrets.EC2_SSH_KEY }}
+          HOST: ${{ secrets.EC2_HOST }}
+        run: |
+          printf '%s\n' "$SSH_KEY" > /tmp/ec2_key
+          chmod 600 /tmp/ec2_key
+          scp -i /tmp/ec2_key -o StrictHostKeyChecking=no dist/jamunaconnect-*.jar "ubuntu@${HOST}:/tmp/app.jar"
+          ssh -i /tmp/ec2_key -o StrictHostKeyChecking=no "ubuntu@${HOST}" \
+            'sudo mv /tmp/app.jar /opt/jamuna/app.jar && \
+             sudo chown jamuna:jamuna /opt/jamuna/app.jar && \
+             sudo systemctl restart jamuna && sleep 3 && systemctl is-active jamuna'
