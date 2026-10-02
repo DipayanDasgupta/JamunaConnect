@@ -19,10 +19,10 @@ public interface RoomRepository extends JpaRepository<Room, String> {
             WHERE r.room_number ILIKE '%' || :query || '%'
                OR r.occupants   ILIKE '%' || :query || '%'
                OR similarity(r.room_number, :query) > 0.25
-               OR similarity(r.occupants,  :query) > 0.25
+               OR word_similarity(:query, r.occupants) > 0.3
             ORDER BY greatest(
                        similarity(r.room_number, :query),
-                       similarity(r.occupants,   :query)
+                       word_similarity(:query, r.occupants)
                      ) DESC, r.room_number
             LIMIT 25
             """, nativeQuery = true)
