@@ -55,35 +55,51 @@ jobs:
         with:
           node-version: "22"
       - name: Deploy to Vercel
+        # Plain static site with a vercel.json: upload the directory as-is,
+        # exactly like a local `vercel deploy --prod`. No build step, since
+        # the default output-directory detection would publish an empty dir.
         run: |
           npm i -g vercel@latest
-          vercel pull --yes --environment=production --token="$VERCEL_TOKEN"
-          vercel build --prod --token="$VERCEL_TOKEN"
-          vercel deploy --prebuilt --prod --token="$VERCEL_TOKEN"
+          vercel deploy --prod --yes --token="$VERCEL_TOKEN"
         env:
           VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
           VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
           VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
 
-  # Backend auto-deploys to the AWS instance from main.
+  # Backend auto-deploys to the AWS instance from main, over SSM (no inbound SSH).
   deploy-backend:
     needs: build
     if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      contents: read
     steps:
       - uses: actions/download-artifact@v4
         with:
           name: jamunaconnect-jar
           path: dist
-      - name: Upload jar and restart service
-        env:
-          SSH_KEY: ${{ secrets.EC2_SSH_KEY }}
-          HOST: ${{ secrets.EC2_HOST }}
+      - uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: arn:aws:iam::552916920281:role/JamunaGitHubDeploy
+          aws-region: ap-south-1
+      - name: Upload jar to S3
+        run: aws s3 cp dist/jamunaconnect-*.jar s3://jamuna-artifacts-552916920281/jamuna.jar
+      - name: Deploy on instance via SSM
         run: |
-          printf '%s\n' "$SSH_KEY" > /tmp/ec2_key
-          chmod 600 /tmp/ec2_key
-          scp -i /tmp/ec2_key -o StrictHostKeyChecking=no dist/jamunaconnect-*.jar "ubuntu@${HOST}:/tmp/app.jar"
-          ssh -i /tmp/ec2_key -o StrictHostKeyChecking=no "ubuntu@${HOST}" \
-            'sudo mv /tmp/app.jar /opt/jamuna/app.jar && \
-             sudo chown jamuna:jamuna /opt/jamuna/app.jar && \
-             sudo systemctl restart jamuna && sleep 3 && systemctl is-active jamuna'
+          CMD_ID=$(aws ssm send-command \
+            --instance-ids i-0c3c936ad498e2861 \
+            --document-name AWS-RunShellScript \
+            --parameters 'commands=["set -e","aws s3 cp s3://jamuna-artifacts-552916920281/jamuna.jar /tmp/app.jar","sudo mv /tmp/app.jar /opt/jamuna/app.jar","sudo chown jamuna:jamuna /opt/jamuna/app.jar","sudo systemctl restart jamuna","sleep 5","systemctl is-active jamuna"]' \
+            --query 'Command.CommandId' --output text)
+          echo "SSM command: $CMD_ID"
+          for i in $(seq 1 30); do
+            STATUS=$(aws ssm get-command-invocation --command-id "$CMD_ID" --instance-id i-0c3c936ad498e2861 --query Status --output text 2>/dev/null || echo Pending)
+            echo "status: $STATUS"
+            case "$STATUS" in
+              Success) aws ssm get-command-invocation --command-id "$CMD_ID" --instance-id i-0c3c936ad498e2861 --query StandardOutputContent --output text; exit 0 ;;
+              Failed|Cancelled|TimedOut) aws ssm get-command-invocation --command-id "$CMD_ID" --instance-id i-0c3c936ad498e2861 --query StandardErrorContent --output text; exit 1 ;;
+            esac
+            sleep 5
+          done
+          echo "deploy timed out"; exit 1
