@@ -67,13 +67,11 @@ jobs:
           VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
 
   # Backend auto-deploys to the AWS instance from main, over SSM (no inbound SSH).
+  # Uses scoped access-key credentials for a least-privilege CI user.
   deploy-backend:
     needs: build
     if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
-    permissions:
-      id-token: write
-      contents: read
     steps:
       - uses: actions/download-artifact@v4
         with:
@@ -81,8 +79,9 @@ jobs:
           path: dist
       - uses: aws-actions/configure-aws-credentials@v4
         with:
-          role-to-assume: arn:aws:iam::552916920281:role/JamunaGitHubDeploy
-          aws-region: ap-south-1
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_REGION }}
       - name: Upload jar to S3
         run: aws s3 cp dist/jamunaconnect-*.jar s3://jamuna-artifacts-552916920281/jamuna.jar
       - name: Deploy on instance via SSM
