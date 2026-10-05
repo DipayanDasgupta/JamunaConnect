@@ -10,65 +10,133 @@
 </head>
 <body>
 <div th:replace="~{fragments/layout :: nav}"></div>
-<main class="container-fluid py-4 px-4">
-    <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
-        <h1 class="h3 mb-0">Complaint triage</h1>
+<main class="container-fluid py-4 px-4" style="max-width: 1280px;">
+    <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3">
         <div>
-            <span class="text-muted me-2" sec:authentication="name">staff</span>
+            <h1 class="h3 mb-0">Complaint triage</h1>
+            <p class="text-muted mb-0 small">Move complaints forward; every move is audit-trailed.</p>
+        </div>
+        <div class="d-flex align-items-center gap-2">
+            <span class="badge rounded-pill text-bg-light border" sec:authentication="name">staff</span>
             <a class="btn btn-sm btn-outline-secondary" href="/staff/logout">Sign out</a>
         </div>
     </div>
 
-    <form class="row g-2 my-3" method="get" action="/staff/dashboard">
-        <div class="col-auto">
-            <select class="form-select" name="status" onchange="this.form.submit()">
-                <option value="">All statuses</option>
-                <option th:each="s : ${statuses}" th:value="${s}" th:text="${s}"
-                        th:selected="${s == selectedStatus}"></option>
-            </select>
+    <div class="row g-2 mb-3" id="stat-cards">
+        <div class="col-6 col-md-2" th:each="s : ${statuses}">
+            <a th:href="@{/staff/dashboard(status=${s})}" class="text-decoration-none">
+                <div class="card text-center shadow-sm stat-card"
+                     th:classappend="${s == selectedStatus} ? 'border-primary' : ''">
+                    <div class="card-body py-2">
+                        <div class="fs-4 fw-bold" th:text="${counts.get(s)}">0</div>
+                        <div class="small text-muted" th:text="${s}">OPEN</div>
+                    </div>
+                </div>
+            </a>
         </div>
-        <div class="col-auto">
-            <button class="btn btn-outline-primary" type="submit">Apply filter</button>
+        <div class="col-6 col-md-2">
+            <a th:href="@{/staff/dashboard}" class="text-decoration-none">
+                <div class="card text-center shadow-sm stat-card"
+                     th:classappend="${selectedStatus == null} ? 'border-primary' : ''">
+                    <div class="card-body py-2">
+                        <div class="fs-4 fw-bold" th:text="${total}">0</div>
+                        <div class="small text-muted">All</div>
+                    </div>
+                </div>
+            </a>
         </div>
-    </form>
+    </div>
+
+    <div class="card shadow-sm mb-3">
+        <div class="card-body py-2">
+            <div class="row g-2 align-items-end">
+                <div class="col-md-3">
+                    <label class="form-label small mb-1" for="filter-status">Status</label>
+                    <select class="form-select form-select-sm" id="filter-status">
+                        <option value="">All statuses</option>
+                        <option th:each="s : ${statuses}" th:value="${s}" th:text="${s}"
+                                th:selected="${s == selectedStatus}"></option>
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label small mb-1" for="filter-category">Category</label>
+                    <select class="form-select form-select-sm" id="filter-category">
+                        <option value="">All categories</option>
+                        <option th:each="c : ${categories}" th:value="${c}" th:text="${c}"></option>
+                    </select>
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label small mb-1" for="filter-text">Search</label>
+                    <input class="form-control form-control-sm" id="filter-text"
+                           placeholder="Room, name, roll, or words from the complaint…"/>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <div id="alert" class="alert d-none" role="alert"></div>
 
-    <div class="table-responsive">
-        <table class="table table-hover align-middle" id="complaints-table">
-            <thead>
-            <tr><th>#</th><th>Room</th><th>Category</th><th>Summary</th><th>Status</th>
-                <th>Filed</th><th>Move to</th><th></th></tr>
-            </thead>
-            <tbody>
-            <tr th:each="c : ${complaints}" th:attr="data-id=${c.id}">
-                <td th:text="${c.id}"></td>
-                <td th:text="${c.roomNumber}"></td>
-                <td th:text="${c.category}"></td>
-                <td class="text-truncate" style="max-width: 24rem;" th:text="${c.description}"></td>
-                <td><span class="badge text-bg-secondary status-badge" th:text="${c.status}"></span></td>
-                <td th:text="${#temporals.format(c.createdAt, 'dd MMM HH:mm')}"></td>
-                <td>
-                    <select class="form-select form-select-sm transition-target">
-                        <option th:each="s : ${statuses}" th:value="${s}"
-                                th:text="${s}"></option>
-                    </select>
-                </td>
-                <td>
-                    <button class="btn btn-sm btn-primary apply-transition">Apply</button>
-                    <button class="btn btn-sm btn-outline-secondary view-timeline">Timeline</button>
-                </td>
-            </tr>
-            <tr th:if="${#lists.isEmpty(complaints)}">
-                <td colspan="8" class="text-center text-muted py-4">No complaints match this filter.</td>
-            </tr>
-            </tbody>
-        </table>
+    <div class="card shadow-sm">
+        <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0" id="complaints-table">
+                <thead class="table-light">
+                <tr><th>#</th><th>Room</th><th>Category</th><th>Complaint</th><th>Status</th>
+                    <th>Age</th><th style="min-width: 11rem;">Move to</th><th></th></tr>
+                </thead>
+                <tbody>
+                <tr th:each="c : ${complaints}" th:attr="data-id=${c.id}">
+                    <td class="fw-bold" th:text="${c.id}"></td>
+                    <td><span class="badge rounded-pill text-bg-light border room-badge"
+                              th:text="${c.roomNumber}"></span></td>
+                    <td><span class="badge rounded-pill text-bg-info category-badge"
+                              th:text="${c.category}"></span></td>
+                    <td>
+                        <div class="fw-semibold" th:text="${c.submitterName}"></div>
+                        <div class="text-muted small text-truncate complaint-desc"
+                             style="max-width: 26rem;" th:text="${c.description}"
+                             th:title="${c.description}"></div>
+                    </td>
+                    <td><span class="badge text-white status-badge" th:text="${c.status}"
+                              th:classappend="' status-' + ${c.status}"></span></td>
+                    <td class="small text-muted age-cell"
+                        th:attr="data-created=${c.createdAt}"
+                        th:text="${#temporals.format(c.createdAt, 'dd MMM HH:mm')}"></td>
+                    <td>
+                        <div class="d-flex gap-1">
+                            <select class="form-select form-select-sm transition-target">
+                                <option th:each="s : ${statuses}" th:value="${s}"
+                                        th:text="${s}"></option>
+                            </select>
+                            <button class="btn btn-sm btn-primary apply-transition">Apply</button>
+                        </div>
+                    </td>
+                    <td>
+                        <button class="btn btn-sm btn-outline-secondary view-timeline">Timeline</button>
+                    </td>
+                </tr>
+                <tr th:if="${#lists.isEmpty(complaints)}">
+                    <td colspan="8" class="text-center text-muted py-4">No complaints match this filter.</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
     </div>
+    <p class="text-muted small mt-2" id="row-count"></p>
 </main>
-<script th:inline="javascript">
-    window.__complaints = /*[[${complaints}]]*/ [];
-</script>
+
+<div class="modal fade" id="timeline-modal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="timeline-title">Complaint timeline</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body" id="timeline-body"></div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 <script src="/js/dashboard.js"></script>
 </body>
 </html>

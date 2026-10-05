@@ -30,6 +30,16 @@ public class StaffController {
         model.addAttribute("complaints", complaints.list(java.util.Optional.ofNullable(status)));
         model.addAttribute("statuses", ComplaintStatus.values());
         model.addAttribute("selectedStatus", status);
+        model.addAttribute("categories", edu.iitm.jamunaconnect.domain.ComplaintCategory.values());
+        java.util.List<edu.iitm.jamunaconnect.domain.Complaint> all =
+                complaints.list(java.util.Optional.empty());
+        java.util.Map<ComplaintStatus, Long> counts = new java.util.EnumMap<>(ComplaintStatus.class);
+        for (ComplaintStatus s : ComplaintStatus.values()) {
+            counts.put(s, 0L);
+        }
+        all.forEach(c -> counts.merge(c.getStatus(), 1L, Long::sum));
+        model.addAttribute("counts", counts);
+        model.addAttribute("total", all.size());
         return "staff/dashboard";
     }
 }
