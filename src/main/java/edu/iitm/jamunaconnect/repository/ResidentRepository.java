@@ -8,4 +8,6 @@ import java.util.List;
 public interface ResidentRepository extends JpaRepository<Resident, String> {
 
     List<Resident> findByRoomNumberOrderByName(String roomNumber);
+
+    List<Resident> findByRoomNumberIn(java.util.Collection<String> roomNumbers);
 }

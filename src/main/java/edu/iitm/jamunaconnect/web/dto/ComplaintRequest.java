@@ -14,8 +14,8 @@ public class ComplaintRequest {
     private String submitterName;
 
     @NotBlank
-    @Pattern(regexp = "^[A-Za-z]{1,3}[- ]?\\d{2,4}$",
-             message = "room must look like a block letter followed by digits, e.g. A101")
+    @Pattern(regexp = "^([A-Za-z]{1,3}[- ]?)?\\d{2,4}(/\\d{1,4})?$",
+             message = "room must look like 254, A101 or 1009/10")
     private String roomNumber;
 
     @NotNull

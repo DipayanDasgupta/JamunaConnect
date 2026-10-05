@@ -11,8 +11,10 @@
         const rows = await res.json();
         const match = rows.find(r => r.roomNumber === roomNumber) || rows[0];
         if (!match) return `<div>No resident on record for ${roomNumber}.</div>`;
-        return `<strong>Room ${match.roomNumber}</strong><br/>Block ${match.block}, floor ${match.floor}<br/>`
-            + `${match.occupants || "No residents on record"}`;
+        const who = (match.residents && match.residents.length)
+            ? match.residents.map(r => `${r.name} (${r.rollNumber})`).join(", ")
+            : "No residents on record";
+        return `<strong>Room ${match.roomNumber}</strong><br/>Block ${match.block}, floor ${match.floor}<br/>${who}`;
     }
 
     fetch("/geo/blocks.geojson")
