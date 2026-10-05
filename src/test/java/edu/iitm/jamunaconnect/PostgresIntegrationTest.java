@@ -51,8 +51,8 @@ class PostgresIntegrationTest {
 
     @Test
     void pgTrgmFindsMisspeltOccupants() {
-        assertThat(search.search("Rahull")).extracting("roomNumber").contains("A101");
-        assertThat(search.search("Arjn")).extracting("roomNumber").contains("A102");
+        assertThat(search.search("Dipayn")).extracting("roomNumber").contains("254");
+        assertThat(search.search("Sanchi")).extracting("roomNumber").contains("107");
     }
 
     @Test
