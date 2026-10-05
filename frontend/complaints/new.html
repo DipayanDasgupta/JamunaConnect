@@ -27,13 +27,19 @@
 
         <label for="category">Category</label>
         <select id="category" name="category" required>
-            <option value="WATER">WATER</option>
-            <option value="ELECTRICAL">ELECTRICAL</option>
-            <option value="CARPENTRY">CARPENTRY</option>
-            <option value="CLEANING">CLEANING</option>
-            <option value="INTERNET">INTERNET</option>
+            <option value="WATER">WATER (taste, filters, coolers, plumbing)</option>
+            <option value="ELECTRICAL">ELECTRICAL (power, lights)</option>
+            <option value="INTERNET">INTERNET (LAN down, router)</option>
+            <option value="CLEANING">CLEANING (handwash, dustbins, washrooms)</option>
+            <option value="MAINTENANCE">MAINTENANCE (nets, mirrors, furniture)</option>
+            <option value="PEST_CONTROL">PEST CONTROL (monkeys, mosquitoes)</option>
+            <option value="LOST_AND_FOUND">LOST &amp; FOUND</option>
             <option value="OTHER">OTHER</option>
         </select>
+        <p class="muted" style="font-size:0.85rem;">Internet down? First check the
+            <a href="https://cc.iitm.ac.in/network/wirelessrouterconfiguration.html" target="_blank" rel="noopener">CC router-configuration guide</a>
+            (hostel LAN IP should look like 10.22.x.x; never plug the router WAN port into the wall socket) —
+            most hostel-wide "outages" traced to one misconfigured router.</p>
 
         <label for="description">Description</label>
         <textarea id="description" name="description" rows="5" maxlength="2000" required></textarea>

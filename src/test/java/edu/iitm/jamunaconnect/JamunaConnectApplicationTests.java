@@ -38,9 +38,9 @@ class JamunaConnectApplicationTests {
 
     @Test
     void seededRoomsAreSearchable() {
-        ResponseEntity<String> rooms = rest.getForEntity("/api/rooms?query=A101", String.class);
+        ResponseEntity<String> rooms = rest.getForEntity("/api/rooms?query=254", String.class);
         assertThat(rooms.getStatusCode()).isEqualTo(HttpStatus.OK);
-        assertThat(rooms.getBody()).contains("A101");
+        assertThat(rooms.getBody()).contains("254");
     }
 
     @Test

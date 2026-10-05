@@ -26,6 +26,9 @@
             <select class="form-select" id="category" name="category" required>
                 <option th:each="c : ${categories}" th:value="${c}" th:text="${c}"></option>
             </select>
+            <div class="form-text">Internet down? Check the
+                <a href="https://cc.iitm.ac.in/network/wirelessrouterconfiguration.html" target="_blank" rel="noopener">CC router-configuration guide</a>
+                first — most hostel outages trace to one misconfigured router.</div>
         </div>
         <div class="mb-3">
             <label class="form-label" for="description">Description</label>
