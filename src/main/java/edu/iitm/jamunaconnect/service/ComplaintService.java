@@ -105,6 +105,19 @@ public class ComplaintService {
         return history.findByComplaintIdOrderByChangedAtAsc(complaintId);
     }
 
+    /**
+     * Resident-facing status check: the room number acts as a weak shared
+     * secret so a complaint id alone is not enough to read someone's report.
+     */
+    @Transactional(readOnly = true)
+    public Complaint getForResident(Long id, String roomNumber) {
+        Complaint complaint = get(id);
+        if (roomNumber == null || !complaint.getRoomNumber().equalsIgnoreCase(roomNumber.trim())) {
+            throw new IllegalArgumentException("No complaint " + id + " for that room");
+        }
+        return complaint;
+    }
+
     @Transactional(readOnly = true)
     public List<Complaint> list(Optional<ComplaintStatus> status) {
         return status.map(complaints::findByStatusOrderByCreatedAtAsc)

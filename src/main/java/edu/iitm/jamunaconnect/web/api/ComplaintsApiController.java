@@ -7,6 +7,7 @@ import edu.iitm.jamunaconnect.service.RateLimiter;
 import edu.iitm.jamunaconnect.web.dto.ComplaintRequest;
 import edu.iitm.jamunaconnect.web.dto.ComplaintResponse;
 import edu.iitm.jamunaconnect.web.dto.HistoryResponse;
+import edu.iitm.jamunaconnect.web.dto.PublicComplaintResponse;
 import edu.iitm.jamunaconnect.web.dto.StatusUpdateRequest;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
@@ -59,6 +60,19 @@ public class ComplaintsApiController {
     @GetMapping("/{id}")
     public ComplaintResponse get(@PathVariable Long id) {
         return ComplaintResponse.from(complaints.get(id));
+    }
+
+    /** Public status check: complaint id + the room it was filed from. */
+    @GetMapping("/{id}/public")
+    public PublicComplaintResponse publicStatus(@PathVariable Long id,
+                                                @RequestParam("room") String room) {
+        Complaint c = complaints.getForResident(id, room);
+        List<HistoryResponse> hist = complaints.timeline(id).stream()
+                .map(h -> new HistoryResponse(h.getId(),
+                        h.getOldStatus() == null ? null : h.getOldStatus().name(),
+                        h.getNewStatus().name(), h.getChangedBy(), h.getChangedAt()))
+                .toList();
+        return new PublicComplaintResponse(ComplaintResponse.from(c), hist);
     }
 
     @GetMapping("/{id}/history")

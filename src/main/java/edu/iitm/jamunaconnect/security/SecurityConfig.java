@@ -36,12 +36,14 @@ public class SecurityConfig {
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers(
                         "/", "/lookup", "/map", "/contacts", "/complaints/new",
-                        "/api/rooms", "/api/contacts",
+                        "/complaints/track", "/api/rooms", "/api/contacts",
                         "/css/**", "/js/**", "/geo/**", "/images/**", "/favicon.ico",
                         "/actuator/health", "/actuator/health/**", "/actuator/info")
                     .permitAll()
                 // Residents file complaints anonymously.
                 .requestMatchers(HttpMethod.POST, "/api/complaints").permitAll()
+                // Residents check their own complaint with id + room.
+                .requestMatchers(HttpMethod.GET, "/api/complaints/*/public").permitAll()
                 .requestMatchers("/staff/**").hasAnyRole("OFFICE_STAFF", "WARDEN")
                 .requestMatchers("/api/complaints/**", "/api/complaints").hasAnyRole("OFFICE_STAFF", "WARDEN")
                 .anyRequest().authenticated())
