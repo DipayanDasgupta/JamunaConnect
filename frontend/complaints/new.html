@@ -13,6 +13,7 @@
     <a href="/lookup">Room Lookup</a>
     <a href="/map">Campus Map</a>
     <a href="/complaints/new">File a Complaint</a>
+    <a href="/complaints/track">Track</a>
     <a href="/staff/login">Staff</a>
 </nav>
 <main style="max-width:720px;">
@@ -36,6 +37,13 @@
             <option value="LOST_AND_FOUND">LOST &amp; FOUND</option>
             <option value="OTHER">OTHER</option>
         </select>
+
+        <div id="otherCategoryWrap" class="hidden">
+            <label for="otherCategory">Please specify the exact category</label>
+            <input id="otherCategory" name="otherCategory" maxlength="128"
+                   placeholder="e.g. Room change request, Furniture replacement"/>
+        </div>
+
         <p class="muted" style="font-size:0.85rem;">Internet down? First check the
             <a href="https://cc.iitm.ac.in/network/wirelessrouterconfiguration.html" target="_blank" rel="noopener">CC router-configuration guide</a>
             (hostel LAN IP should look like 10.22.x.x; never plug the router WAN port into the wall socket) —

@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <title>Track a complaint &middot; JamunaConnect</title>
+    <link rel="stylesheet" href="/css/app.css"/>
+</head>
+<body>
+<nav class="nav">
+    <a class="brand" href="/">JamunaConnect</a>
+    <a href="/contacts">Contacts</a>
+    <a href="/lookup">Room Lookup</a>
+    <a href="/map">Campus Map</a>
+    <a href="/complaints/new">File a Complaint</a>
+    <a href="/complaints/track">Track</a>
+    <a href="/staff/login">Staff</a>
+</nav>
+<main style="max-width:760px;">
+    <h1>Track a complaint</h1>
+    <p class="muted">Enter the complaint number you received and the room it was filed from.</p>
+
+    <form id="track-form" class="card">
+        <div class="row">
+            <div>
+                <label for="complaintId">Complaint #</label>
+                <input id="complaintId" inputmode="numeric" placeholder="12" required/>
+            </div>
+            <div>
+                <label for="room">Room</label>
+                <input id="room" placeholder="254" required/>
+            </div>
+            <div style="flex:0 0 auto;">
+                <button class="btn" type="submit">Track</button>
+            </div>
+        </div>
+    </form>
+
+    <div id="track-result" style="margin-top:1.5rem;"></div>
+</main>
+<footer>JamunaConnect &middot; CS5013 Team 59</footer>
+<script src="/js/track.js"></script>
+</body>
+</html>

@@ -34,4 +34,9 @@ public class PublicPageController {
         model.addAttribute("categories", ComplaintCategory.values());
         return "pages/complaint-form";
     }
+
+    @GetMapping("/complaints/track")
+    public String trackComplaint() {
+        return "pages/track";
+    }
 }
