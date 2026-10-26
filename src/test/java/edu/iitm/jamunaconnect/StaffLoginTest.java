@@ -10,7 +10,6 @@ import org.springframework.test.web.servlet.MockMvc;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestBuilders.formLogin;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrlPattern;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 /** Staff sign-in must work through the form, not just HTTP Basic. */
@@ -26,7 +25,7 @@ class StaffLoginTest {
     void anonymousBrowserIsSentToSignInNotBare401() throws Exception {
         mvc.perform(get("/staff/dashboard"))
                 .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrlPattern("**/staff/login"));
+                .andExpect(redirectedUrl("/staff/login"));
     }
 
     @Test

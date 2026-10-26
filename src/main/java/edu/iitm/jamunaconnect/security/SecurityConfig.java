@@ -10,7 +10,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.DelegatingAuthenticationEntryPoint;
-import org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint;
 import org.springframework.security.web.authentication.www.BasicAuthenticationEntryPoint;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
@@ -77,7 +76,8 @@ public class SecurityConfig {
                 new LinkedHashMap<>();
         map.put(new AntPathRequestMatcher("/api/**"), basic);
         DelegatingAuthenticationEntryPoint entry = new DelegatingAuthenticationEntryPoint(map);
-        entry.setDefaultEntryPoint(new LoginUrlAuthenticationEntryPoint("/staff/login"));
+        // Relative so the browser keeps whatever public host it used (Vercel).
+        entry.setDefaultEntryPoint((request, response, ex) -> response.sendRedirect("/staff/login"));
         return entry;
     }
 }
