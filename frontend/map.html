@@ -18,13 +18,16 @@
     <a href="/staff/login">Staff</a>
 </nav>
 <main>
-    <h1>Jamuna campus map</h1>
-    <p class="muted">Click a block; the popup calls the same <code>/api/rooms</code> endpoint as
-        the search box, so both share one source of truth.</p>
+    <div class="page-head">
+        <h1>Jamuna campus map</h1>
+        <p>Click a block; the popup calls the same <code>/api/rooms</code> endpoint as
+            the search box, so both share one source of truth.</p>
+    </div>
     <div id="map"></div>
 </main>
 <footer>JamunaConnect &middot; CS5013 Team 59</footer>
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script src="/js/map.js"></script>
+<script src="/js/app.js"></script>
 </body>
 </html>
