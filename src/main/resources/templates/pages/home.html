@@ -10,36 +10,66 @@
 <body>
 <div th:replace="~{fragments/layout :: nav}"></div>
 <main class="container py-5">
-    <div class="p-5 bg-body-tertiary rounded-3">
+    <section class="hero-panel">
+        <p class="eyebrow">IIT Madras &middot; Jamuna Hostel</p>
         <h1 class="display-5 fw-bold">Jamuna Hostel, in one place</h1>
         <p class="lead">Contacts, room lookup, campus map, and complaint routing for residents,
             visitors and the hostel office.</p>
-        <div class="d-flex gap-2 flex-wrap">
-            <a class="btn btn-primary" href="/complaints/new">File a complaint</a>
-            <a class="btn btn-outline-secondary" href="/lookup">Look up a room</a>
-            <a class="btn btn-outline-secondary" href="/map">Open the map</a>
+        <div class="d-flex gap-2 flex-wrap mt-3">
+            <a class="btn btn-light" href="/complaints/new">File a complaint</a>
+            <a class="btn btn-outline-light" href="/lookup">Look up a room</a>
+            <a class="btn btn-outline-light" href="/map">Open the map</a>
         </div>
-    </div>
-    <div class="row g-4 mt-4">
-        <div class="col-md-4">
-            <h4>Find people</h4>
-            <p class="text-muted">Search by room number or resident name, with typo tolerance.</p>
+    </section>
+    <div class="row g-3 mt-4">
+        <div class="col-md-6 col-xl-3">
+            <a class="card feature-card h-100" href="/lookup">
+                <div class="card-body">
+                    <h5>Find people</h5>
+                    <p class="text-muted mb-0">Search by room number, name or roll number, with
+                        typo tolerance.</p>
+                </div>
+            </a>
         </div>
-        <div class="col-md-4">
-            <h4>Stay current</h4>
-            <p class="text-muted">Office-bearer contacts come from one editable directory.</p>
+        <div class="col-md-6 col-xl-3">
+            <a class="card feature-card h-100" href="/contacts">
+                <div class="card-body">
+                    <h5>Stay current</h5>
+                    <p class="text-muted mb-0">Office-bearer contacts come from one editable
+                        directory.</p>
+                </div>
+            </a>
         </div>
-        <div class="col-md-4">
-            <h4>Track complaints</h4>
-            <p class="text-muted">Every complaint gets a timeline, not a silent overwrite.</p>
+        <div class="col-md-6 col-xl-3">
+            <a class="card feature-card h-100" href="/complaints/track">
+                <div class="card-body">
+                    <h5>Track complaints</h5>
+                    <p class="text-muted mb-0">Every complaint gets a timeline, not a silent
+                        overwrite.</p>
+                </div>
+            </a>
         </div>
-        <div class="col-md-4">
-            <h4>Internet down?</h4>
-            <p class="text-muted">Most hostel outages trace to one misconfigured router. Check the
-                <a href="https://cc.iitm.ac.in/network/instructiontoconnectlan.html" target="_blank" rel="noopener">CC LAN guide</a>
-                and the
-                <a href="https://cc.iitm.ac.in/network/wirelessrouterconfiguration.html" target="_blank" rel="noopener">router-configuration guide</a>
-                before filing.</p>
+        <div class="col-md-6 col-xl-3">
+            <a class="card feature-card h-100" href="/map">
+                <div class="card-body">
+                    <h5>Find a block</h5>
+                    <p class="text-muted mb-0">Click any block on the campus map to see who lives
+                        there.</p>
+                </div>
+            </a>
+        </div>
+        <div class="col-12">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="mb-1">Internet down?</h5>
+                    <p class="text-muted mb-0">Most hostel outages trace to one misconfigured
+                        router. Check the
+                        <a href="https://cc.iitm.ac.in/network/instructiontoconnectlan.html" target="_blank" rel="noopener">CC LAN guide</a>
+                        and the
+                        <a href="https://cc.iitm.ac.in/network/wirelessrouterconfiguration.html" target="_blank" rel="noopener">router-configuration guide</a>
+                        before filing.</p>
+                </div>
+            </div>
         </div>
     </div>
 </main>
