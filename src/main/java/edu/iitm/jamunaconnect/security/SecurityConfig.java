@@ -36,7 +36,7 @@ public class SecurityConfig {
                 .requestMatchers(
                         "/", "/lookup", "/map", "/contacts", "/complaints/new",
                         "/complaints/track", "/api/rooms", "/api/contacts",
-                        "/css/**", "/js/**", "/geo/**", "/images/**", "/favicon.ico",
+                        "/css/**", "/js/**", "/staff-assets/**", "/geo/**", "/images/**", "/favicon.ico",
                         "/actuator/health", "/actuator/health/**", "/actuator/info")
                     .permitAll()
                 // Residents file complaints anonymously.
