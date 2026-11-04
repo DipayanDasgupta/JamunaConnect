@@ -88,6 +88,12 @@ h1, h2, h3, h4, h5 { letter-spacing: -0.02em; }
     --bs-btn-hover-bg: #f1f5f9;
     --bs-btn-hover-color: #0f172a;
     --bs-btn-hover-border-color: #cbd5e1;
+    color: #475569 !important;
+    border-color: #cbd5e1 !important;
+}
+.btn-outline-secondary:hover {
+    background: #f1f5f9 !important;
+    color: #0f172a !important;
 }
 
 /* ---------- Cards ---------- */
@@ -215,6 +221,11 @@ h1, h2, h3, h4, h5 { letter-spacing: -0.02em; }
     box-shadow: 0 0 0 4px rgba(16, 185, 129, 0.18);
 }
 .auth-brand:hover { color: var(--jamuna-dark); }
+body.auth-page main {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
 
 /* ---------- Timeline ---------- */
 .timeline {
