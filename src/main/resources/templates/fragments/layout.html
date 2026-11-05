@@ -8,11 +8,20 @@
             <a class="nav-link" href="/contacts">Contacts</a>
             <a class="nav-link" href="/lookup">Room Lookup</a>
             <a class="nav-link" href="/map">Campus Map</a>
+            <a class="nav-link" href="/notices">Notices</a>
+            <a class="nav-link" href="/emergency">Emergency</a>
+            <a class="nav-link" href="/wifi">WiFi</a>
             <a class="nav-link" href="/complaints/new">File a Complaint</a>
             <a class="nav-link" href="/complaints/track">Track</a>
             <a class="nav-link" href="/staff/dashboard">Staff</a>
         </div>
     </div>
+</nav>
+<nav th:fragment="staffNav" class="d-flex gap-2 flex-wrap mb-3">
+    <a class="btn btn-sm btn-outline-secondary" href="/staff/dashboard">Complaints</a>
+    <a class="btn btn-sm btn-outline-secondary" href="/staff/notices">Notices</a>
+    <a class="btn btn-sm btn-outline-secondary" href="/staff/emergency">Emergency</a>
+    <a class="btn btn-sm btn-outline-secondary" href="/staff/residents">Residents</a>
 </nav>
 <footer th:fragment="footer" class="text-center text-muted py-4 small">
     JamunaConnect &middot; CS5013 Team 59 &middot; Dipayan Dasgupta &amp; S. Saathvik

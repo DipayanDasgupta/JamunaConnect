@@ -18,6 +18,10 @@
         }
     }
     categorySelect.addEventListener("change", toggleOther);
+    const requestedCategory = new URLSearchParams(location.search).get("category");
+    if (requestedCategory && [...categorySelect.options].some(o => o.value === requestedCategory)) {
+        categorySelect.value = requestedCategory;
+    }
     toggleOther();
 
     function show(kind, message) {

@@ -14,6 +14,10 @@
         }
     }
     categorySelect.addEventListener("change", toggleOther);
+    const requestedCategory = new URLSearchParams(location.search).get("category");
+    if (requestedCategory && [...categorySelect.options].some(o => o.value === requestedCategory)) {
+        categorySelect.value = requestedCategory;
+    }
     toggleOther();
     const clientToken = (crypto.randomUUID ? crypto.randomUUID()
         : String(Date.now()) + Math.random().toString(16).slice(2));

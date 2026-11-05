@@ -34,8 +34,9 @@ public class SecurityConfig {
         http
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers(
-                        "/", "/lookup", "/map", "/contacts", "/complaints/new",
-                        "/complaints/track", "/api/rooms", "/api/contacts",
+                        "/", "/lookup", "/map", "/contacts", "/notices", "/emergency", "/wifi",
+                        "/complaints/new", "/complaints/track",
+                        "/api/rooms", "/api/contacts", "/api/notices", "/api/emergency",
                         "/css/**", "/js/**", "/staff-assets/**", "/geo/**", "/images/**", "/favicon.ico",
                         "/actuator/health", "/actuator/health/**", "/actuator/info")
                     .permitAll()

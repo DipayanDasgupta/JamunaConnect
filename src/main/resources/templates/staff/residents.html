@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <title>Manage residents &middot; JamunaConnect</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootswatch@5.3.3/dist/minty/bootstrap.min.css" rel="stylesheet"/>
+    <link rel="stylesheet" href="/staff-assets/css/app.css"/>
+</head>
+<body>
+<div th:replace="~{fragments/layout :: nav}"></div>
+<main class="container-fluid py-4 px-4" style="max-width: 1280px;">
+    <div th:replace="~{fragments/layout :: staffNav}"></div>
+    <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3">
+        <div>
+            <h1 class="h3 mb-0">Resident directory</h1>
+            <p class="text-muted mb-0 small">Add, update or bulk-import the room allocation used by lookup and complaints.</p>
+        </div>
+        <span class="badge rounded-pill text-bg-light border" th:text="${#lists.size(residents)} + ' residents'">0</span>
+    </div>
+
+    <div th:if="${message}" class="alert alert-success" th:text="${message}"></div>
+    <div th:if="${error}" class="alert alert-danger" th:text="${error}"></div>
+
+    <div class="row g-3 mb-4">
+        <div class="col-lg-7">
+            <div class="card shadow-sm h-100">
+                <div class="card-body">
+                    <h2 class="h5">Add or update a resident</h2>
+                    <form th:action="@{/staff/residents}" method="post" class="row g-2">
+                        <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+                        <div class="col-md-4">
+                            <label class="form-label" for="rollNumber">Roll number</label>
+                            <input class="form-control" id="rollNumber" name="rollNumber" maxlength="16" required/>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label" for="name">Name</label>
+                            <input class="form-control" id="name" name="name" maxlength="128" required/>
+                        </div>
+                        <div class="col-md-2">
+                            <label class="form-label" for="roomNumber">Room</label>
+                            <input class="form-control" id="roomNumber" name="roomNumber" maxlength="16" placeholder="254"/>
+                        </div>
+                        <div class="col-md-2">
+                            <label class="form-label" for="contact">Contact</label>
+                            <input class="form-control" id="contact" name="contact" maxlength="64"/>
+                        </div>
+                        <div class="col-12">
+                            <button class="btn btn-primary" type="submit">Save resident</button>
+                            <span class="text-muted small ms-2">Saving an existing roll number updates that row.</span>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-5">
+            <div class="card shadow-sm h-100">
+                <div class="card-body">
+                    <h2 class="h5">Bulk import</h2>
+                    <form th:action="@{/staff/residents/bulk}" method="post">
+                        <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+                        <label class="form-label" for="rawText">One resident per line: <code>roll,name,room[,contact]</code></label>
+                        <textarea class="form-control font-monospace" id="rawText" name="rawText" rows="6"
+                                  placeholder="CE24B059,Dipayan Dasgupta,254&#10;CS26M036,S. Saathvik,255"></textarea>
+                        <p class="form-text">Blank lines and lines starting with # are ignored. Invalid lines are skipped and reported.</p>
+                        <button class="btn btn-primary" type="submit">Import residents</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="card shadow-sm">
+        <div class="card-body py-2">
+            <label class="form-label small mb-1" for="resident-search">Search</label>
+            <input class="form-control form-control-sm" id="resident-search"
+                   placeholder="Roll number, name or room..."/>
+        </div>
+        <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0" id="residents-table">
+                <thead class="table-light">
+                <tr><th>Roll number</th><th>Name</th><th>Room</th><th>Contact</th><th></th></tr>
+                </thead>
+                <tbody>
+                <tr th:each="r : ${residents}">
+                    <td class="fw-semibold font-monospace" th:text="${r.rollNumber}"></td>
+                    <td th:text="${r.name}"></td>
+                    <td><span class="badge rounded-pill text-bg-light border" th:text="${r.roomNumber ?: '-'}">-</span></td>
+                    <td class="text-muted" th:text="${r.contact ?: '-'}">-</td>
+                    <td class="text-end">
+                        <form th:action="@{/staff/residents/{roll}/delete(roll=${r.rollNumber})}" method="post"
+                              onsubmit="return confirm('Remove this resident?');">
+                            <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+                            <button class="btn btn-sm btn-outline-danger" type="submit">Remove</button>
+                        </form>
+                    </td>
+                </tr>
+                <tr th:if="${#lists.isEmpty(residents)}">
+                    <td colspan="5" class="text-center text-muted py-4">No residents yet.</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+        <p class="text-muted small px-3 py-2 mb-0" id="resident-count"></p>
+    </div>
+</main>
+<script src="/staff-assets/js/staff-residents.js"></script>
+</body>
+</html>

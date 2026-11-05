@@ -22,6 +22,8 @@
         </div>
     </div>
 
+    <div th:replace="~{fragments/layout :: staffNav}"></div>
+
     <div class="row g-2 mb-3" id="stat-cards">
         <div class="col-6 col-md-2" th:each="s : ${statuses}">
             <a th:href="@{/staff/dashboard(status=${s})}" class="text-decoration-none">

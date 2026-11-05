@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <title>WiFi / LAN &middot; JamunaConnect</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootswatch@5.3.3/dist/minty/bootstrap.min.css" rel="stylesheet"/>
+    <link rel="stylesheet" href="/staff-assets/css/app.css"/>
+</head>
+<body>
+<div th:replace="~{fragments/layout :: nav}"></div>
+<main class="container py-5">
+    <div class="mb-4">
+        <h1 class="mb-2">WiFi / LAN help</h1>
+        <p class="text-muted mb-0">Check the official guides and the quick checks below before filing a complaint.</p>
+    </div>
+
+    <div class="row g-4">
+        <div class="col-lg-7">
+            <div class="card shadow-sm mb-4">
+                <div class="card-body">
+                    <h2 class="h5">Quick checks</h2>
+                    <ol class="mb-0">
+                        <li>Restart the router, wait two minutes, then reconnect.</li>
+                        <li>Confirm the hostel LAN cable is in a LAN port, not the WAN port.</li>
+                        <li>Check the router address: hostel LAN addresses normally look like <code>10.22.x.x</code>.</li>
+                        <li>Ask whether neighbours on the same floor are also down; if yes, it is likely a switch or uplink issue.</li>
+                        <li>Keep the router model, MAC address and your room number ready when filing.</li>
+                    </ol>
+                </div>
+            </div>
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h2 class="h5">Official IITM network pages</h2>
+                    <div class="list-group list-group-flush">
+                        <a class="list-group-item list-group-item-action" target="_blank" rel="noopener"
+                           href="https://cc.iitm.ac.in/network/wirelessrouterconfiguration.html">
+                            Wireless router configuration
+                        </a>
+                        <a class="list-group-item list-group-item-action" target="_blank" rel="noopener"
+                           href="https://cc.iitm.ac.in/network/instructiontoconnectlan.html">
+                            LAN setup instructions
+                        </a>
+                        <a class="list-group-item list-group-item-action" target="_blank" rel="noopener"
+                           href="https://ccw.iitm.ac.in/common/images/nicUpload/51442c87b9900369ebdb5d86f37f9e179a228f3434c4865ac947718f4ce50623_Hostel-LAN-Manual.pdf">
+                            Hostel zone LAN manual (PDF)
+                        </a>
+                        <a class="list-group-item list-group-item-action" target="_blank" rel="noopener"
+                           href="https://cc.iitm.ac.in/">
+                            NetAccess / CC home
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-5">
+            <div class="card shadow-sm mb-4">
+                <div class="card-body">
+                    <h2 class="h5">Still down?</h2>
+                    <p class="text-muted">File an <strong>INTERNET</strong> complaint with your room number, router model and MAC address. The office can escalate it to the network helpdesk.</p>
+                    <a class="btn btn-primary" href="/complaints/new?category=INTERNET">File a WiFi complaint</a>
+                </div>
+            </div>
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h2 class="h5">Helpdesk</h2>
+                    <p class="mb-1"><a href="mailto:helpdesknetworks@iitm.ac.in">helpdesknetworks@iitm.ac.in</a></p>
+                    <p class="text-muted small mb-0">Keep the hostel office in copy: <a href="mailto:jamuna@smail.iitm.ac.in">jamuna@smail.iitm.ac.in</a>.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+<div th:replace="~{fragments/layout :: footer}"></div>
+</body>
+</html>

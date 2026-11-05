@@ -29,6 +29,21 @@ public class PublicPageController {
         return "pages/map";
     }
 
+    @GetMapping("/notices")
+    public String notices() {
+        return "pages/notices";
+    }
+
+    @GetMapping("/emergency")
+    public String emergency() {
+        return "pages/emergency";
+    }
+
+    @GetMapping("/wifi")
+    public String wifi() {
+        return "pages/wifi";
+    }
+
     @GetMapping("/complaints/new")
     public String complaintForm(Model model) {
         model.addAttribute("categories", ComplaintCategory.values());

@@ -26,6 +26,10 @@ one PostgreSQL database. Design doc: `design_doc_team59.pdf`.
 | Saathvik | E | Complaint/contacts API, validation, rate limit, state machine |
 | Saathvik | F | Async notification on submit + daily 72-hour escalation |
 
+Additional public pages: notice board (`/notices`), emergency/first-aid (`/emergency`)
+and WiFi/LAN help (`/wifi`). Staff manage notices, emergency information and the
+resident directory from `/staff/notices`, `/staff/emergency` and `/staff/residents`.
+
 ## Run locally (no external services)
 
 Uses the `local` profile: in-memory H2, plain substring search, no SMTP (notifications
@@ -55,6 +59,8 @@ Flyway applies `db/migration/common` plus `db/migration/postgresql` (which creat
 |--------|------|------|---------|
 | GET  | `/api/rooms?query=` | public | Fuzzy room/resident lookup |
 | GET  | `/api/contacts` | public | Editable contact directory |
+| GET  | `/api/notices` | public | Office-posted notice board |
+| GET  | `/api/emergency` | public | Emergency contacts + first-aid card |
 | POST | `/api/complaints` | public | File a complaint (validated, rate-limited, idempotent) |
 | GET  | `/api/complaints?status=` | staff/warden | List complaints |
 | GET  | `/api/complaints/{id}/history` | staff/warden | Audit timeline |

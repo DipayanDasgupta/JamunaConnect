@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <title>Emergency &middot; JamunaConnect</title>
+    <link rel="stylesheet" href="/css/app.css"/>
+</head>
+<body>
+<nav class="nav">
+    <a class="brand" href="/">JamunaConnect</a>
+    <a href="/contacts">Contacts</a>
+    <a href="/lookup">Room Lookup</a>
+    <a href="/map">Campus Map</a>
+    <a href="/notices">Notices</a>
+    <a href="/emergency">Emergency</a>
+    <a href="/wifi">WiFi</a>
+    <a href="/complaints/new">File a Complaint</a>
+    <a href="/complaints/track">Track</a>
+    <a href="/staff/login">Staff</a>
+</nav>
+<main>
+    <div class="page-head">
+        <h1>Emergency information</h1>
+        <p>First-aid kit contents, basic guidance and who to call.</p>
+    </div>
+    <div class="cards">
+        <section class="card">
+            <h3>First-aid kit</h3>
+            <p class="muted small">Contents are maintained by the hostel office.</p>
+            <h4>Contents</h4>
+            <p id="first-aid-contents">Loading&hellip;</p>
+            <h4>Usage guidelines</h4>
+            <p id="first-aid-guidelines">Loading&hellip;</p>
+        </section>
+        <section class="card">
+            <h3>Emergency contacts</h3>
+            <p class="muted small">Call the Security Desk first for any incident inside the hostel.</p>
+            <div id="emergency-contacts">Loading&hellip;</div>
+        </section>
+    </div>
+</main>
+<footer>JamunaConnect &middot; CS5013 Team 59</footer>
+<script src="/js/emergency.js"></script>
+<script src="/js/app.js"></script>
+</body>
+</html>
