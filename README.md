@@ -27,8 +27,10 @@ one PostgreSQL database. Design doc: `design_doc_team59.pdf`.
 | Saathvik | F | Async notification on submit + daily 72-hour escalation |
 
 Additional public pages: notice board (`/notices`), emergency/first-aid (`/emergency`)
-and WiFi/LAN help (`/wifi`). Staff manage notices, emergency information and the
-resident directory from `/staff/notices`, `/staff/emergency` and `/staff/residents`.
+and WiFi/LAN help (`/wifi`). Staff manage notices, emergency information, the resident
+directory and the council budget from `/staff/notices`, `/staff/emergency`,
+`/staff/residents` and `/staff/budget`. The budget starts from the council budget sheet
+and is editable by office staff; the warden has read-only access.
 
 ## Run locally (no external services)
 
