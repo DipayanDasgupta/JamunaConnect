@@ -54,6 +54,20 @@ class ContentFeatureTest {
     }
 
     @Test
+    void staffNavDoesNotLeakOntoPublicPages() throws Exception {
+        String html = mvc.perform(get("/")).andReturn().getResponse().getContentAsString();
+        assertThat(count(html, "href=\"/staff/budget\"")).isZero();
+    }
+
+    @Test
+    @WithMockUser(username = "office", roles = "OFFICE_STAFF")
+    void staffNavRendersOnce() throws Exception {
+        String html = mvc.perform(get("/staff/residents"))
+                .andReturn().getResponse().getContentAsString();
+        assertThat(count(html, "href=\"/staff/budget\"")).isEqualTo(1);
+    }
+
+    @Test
     @WithMockUser(username = "office", roles = "OFFICE_STAFF")
     void staffManagementPagesRender() throws Exception {
         mvc.perform(get("/staff/notices")).andExpect(status().isOk());
@@ -110,5 +124,15 @@ class ContentFeatureTest {
         mvc.perform(post("/staff/residents/{roll}/delete", roll).with(csrf()))
                 .andExpect(status().is3xxRedirection());
         assertThat(residents.findById(roll)).isEmpty();
+    }
+
+    private static int count(String haystack, String needle) {
+        int count = 0;
+        int from = 0;
+        while ((from = haystack.indexOf(needle, from)) >= 0) {
+            count++;
+            from += needle.length();
+        }
+        return count;
     }
 }
