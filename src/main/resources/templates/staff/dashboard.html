@@ -30,7 +30,8 @@
                 <div class="card text-center shadow-sm stat-card"
                      th:classappend="${s == selectedStatus} ? 'border-primary' : ''">
                     <div class="card-body py-2">
-                        <div class="fs-4 fw-bold" th:text="${counts.get(s)}">0</div>
+                        <div class="fs-4 fw-bold" th:text="${counts.get(s)}"
+                             th:attr="data-count=${s}">0</div>
                         <div class="small text-muted" th:text="${s}">OPEN</div>
                     </div>
                 </div>
@@ -41,7 +42,7 @@
                 <div class="card text-center shadow-sm stat-card"
                      th:classappend="${selectedStatus == null} ? 'border-primary' : ''">
                     <div class="card-body py-2">
-                        <div class="fs-4 fw-bold" th:text="${total}">0</div>
+                        <div class="fs-4 fw-bold" th:text="${total}" data-count="ALL">0</div>
                         <div class="small text-muted">All</div>
                     </div>
                 </div>
@@ -104,12 +105,15 @@
                         th:attr="data-created=${c.createdAt}"
                         th:text="${#temporals.format(c.createdAt, 'dd MMM HH:mm')}"></td>
                     <td>
-                        <div class="d-flex gap-1">
-                            <select class="form-select form-select-sm transition-target">
-                                <option th:each="s : ${statuses}" th:value="${s}"
-                                        th:text="${s}"></option>
-                            </select>
-                            <button class="btn btn-sm btn-primary apply-transition">Apply</button>
+                        <div th:with="moves=${transitions.get(c.status)}">
+                            <div class="d-flex gap-1" th:if="${!#lists.isEmpty(moves)}">
+                                <select class="form-select form-select-sm transition-target">
+                                    <option th:each="s : ${moves}" th:value="${s}"
+                                            th:text="${s}"></option>
+                                </select>
+                                <button class="btn btn-sm btn-primary apply-transition">Apply</button>
+                            </div>
+                            <span th:if="${#lists.isEmpty(moves)}" class="text-muted small">No further moves</span>
                         </div>
                     </td>
                     <td>

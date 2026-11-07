@@ -29,6 +29,14 @@ public class StaffController {
                             Model model) {
         model.addAttribute("complaints", complaints.list(java.util.Optional.ofNullable(status)));
         model.addAttribute("statuses", ComplaintStatus.values());
+        java.util.Map<ComplaintStatus, java.util.List<ComplaintStatus>> transitions =
+                new java.util.EnumMap<>(ComplaintStatus.class);
+        for (ComplaintStatus from : ComplaintStatus.values()) {
+            transitions.put(from, java.util.Arrays.stream(ComplaintStatus.values())
+                    .filter(from::canTransitionTo)
+                    .toList());
+        }
+        model.addAttribute("transitions", transitions);
         model.addAttribute("selectedStatus", status);
         model.addAttribute("categories", edu.iitm.jamunaconnect.domain.ComplaintCategory.values());
         java.util.List<edu.iitm.jamunaconnect.domain.Complaint> all =

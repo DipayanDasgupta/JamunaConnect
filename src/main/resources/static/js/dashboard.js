@@ -62,9 +62,24 @@
     textFilter.addEventListener("input", applyFilters);
     applyFilters();
 
+    function adjustCounter(status, delta) {
+        const cell = document.querySelector(`[data-count="${status}"]`);
+        if (cell) {
+            const next = Math.max(0, (parseInt(cell.textContent, 10) || 0) + delta);
+            cell.textContent = String(next);
+        }
+    }
+
     async function applyTransition(row, button) {
         const id = row.dataset.id;
-        const status = row.querySelector(".transition-target").value;
+        const select = row.querySelector(".transition-target");
+        if (!select || !select.value) {
+            show("warning", "No further moves are available for this complaint.");
+            return;
+        }
+        const status = select.value;
+        const badgeBefore = row.querySelector(".status-badge");
+        const previousStatus = badgeBefore ? badgeBefore.textContent.trim() : null;
         button.disabled = true;
         try {
             const res = await fetch(`/api/complaints/${id}`, {
@@ -82,6 +97,10 @@
             badge.textContent = updated.status;
             badge.className = "badge text-white status-badge status-" + updated.status;
             row.classList.remove("table-warning");
+            if (previousStatus && previousStatus !== updated.status) {
+                adjustCounter(previousStatus, -1);
+                adjustCounter(updated.status, 1);
+            }
             show("success", `Complaint #${id} moved to ${updated.status}. Timeline updated.`);
         } catch (err) {
             show("danger", "Network error while updating status.");

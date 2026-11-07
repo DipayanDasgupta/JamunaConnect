@@ -14,6 +14,15 @@ class ComplaintStatusTest {
     }
 
     @Test
+    void anyNonClosedStateCanBeClosedDirectly() {
+        for (ComplaintStatus status : ComplaintStatus.values()) {
+            if (status != ComplaintStatus.CLOSED) {
+                assertThat(status.canTransitionTo(ComplaintStatus.CLOSED)).isTrue();
+            }
+        }
+    }
+
+    @Test
     void closedIsTerminal() {
         for (ComplaintStatus next : ComplaintStatus.values()) {
             assertThat(ComplaintStatus.CLOSED.canTransitionTo(next)).isFalse();

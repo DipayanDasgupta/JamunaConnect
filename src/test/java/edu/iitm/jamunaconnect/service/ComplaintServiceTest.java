@@ -78,6 +78,19 @@ class ComplaintServiceTest {
     }
 
     @Test
+    void openComplaintCanBeClosedDirectly() {
+        Complaint c = new Complaint();
+        c.setId(11L);
+        c.setStatus(ComplaintStatus.OPEN);
+        when(complaints.findById(11L)).thenReturn(Optional.of(c));
+
+        service.changeStatus(11L, ComplaintStatus.CLOSED, "office");
+
+        assertThat(c.getStatus()).isEqualTo(ComplaintStatus.CLOSED);
+        verify(history, times(1)).save(any(ComplaintStatusHistory.class));
+    }
+
+    @Test
     void legalTransitionAppendsExactlyOneHistoryRow() {
         Complaint c = new Complaint();
         c.setId(9L);

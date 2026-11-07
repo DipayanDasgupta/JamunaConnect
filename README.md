@@ -70,9 +70,10 @@ Flyway applies `db/migration/common` plus `db/migration/postgresql` (which creat
 
 ## Status machine
 
-`OPEN → ACKNOWLEDGED → IN_PROGRESS → RESOLVED → CLOSED`. Illegal jumps are rejected
-(`409`); every legal move appends a `complaint_status_history` row and is never
-overwritten.
+`OPEN → ACKNOWLEDGED → IN_PROGRESS → RESOLVED → CLOSED`. Office staff can also close any
+non-closed complaint directly; every legal move appends a `complaint_status_history` row
+and is never overwritten. Other illegal jumps (for example `OPEN → RESOLVED`) are
+rejected with `409`.
 
 ## Tests
 
