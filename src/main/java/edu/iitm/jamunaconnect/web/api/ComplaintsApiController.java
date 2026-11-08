@@ -74,7 +74,7 @@ public class ComplaintsApiController {
                         h.getOldStatus() == null ? null : h.getOldStatus().name(),
                         h.getNewStatus().name(), h.getChangedBy(), h.getChangedAt()))
                 .toList();
-        return new PublicComplaintResponse(ComplaintResponse.from(c), hist);
+        return new PublicComplaintResponse(ComplaintResponse.publicView(c), hist);
     }
 
     @GetMapping("/{id}/history")

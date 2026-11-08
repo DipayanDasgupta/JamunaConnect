@@ -69,7 +69,9 @@ class JamunaConnectApplicationTests {
         ResponseEntity<String> track = rest.getForEntity(
                 "/api/complaints/{id}/public?token={token}", String.class, id.longValue(), token);
         assertThat(track.getStatusCode()).isEqualTo(HttpStatus.OK);
-        assertThat(track.getBody()).contains("No water on the floor");
+        assertThat(track.getBody()).contains("No water on the floor")
+                .doesNotContain("trackingToken")
+                .doesNotContain("residentEmail");
 
         ResponseEntity<String> wrong = rest.getForEntity(
                 "/api/complaints/{id}/public?token=nope", String.class, id.longValue());
