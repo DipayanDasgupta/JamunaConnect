@@ -41,6 +41,33 @@ jobs:
           name: jamunaconnect-jar
           path: target/jamunaconnect-*.jar
 
+  # Publish the runnable jar as a public GHCR image. GitHub's runner uploads
+  # to its own registry much faster than a local push over a slow uplink.
+  docker-image:
+    needs: build
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          name: jamunaconnect-jar
+          path: target
+      - uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Build and push image
+        run: |
+          IMAGE=ghcr.io/dipayandasgupta/jamunaconnect
+          docker build -t "$IMAGE:${GITHUB_SHA}" -t "$IMAGE:latest" .
+          docker push "$IMAGE:${GITHUB_SHA}"
+          docker push "$IMAGE:latest"
+
   # Presentation layer auto-deploys to Vercel from main.
   deploy-frontend:
     needs: build
