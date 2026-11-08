@@ -10,12 +10,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 /**
  * Module B: the single rooms endpoint shared by search box and map click.
- * Read-only and safe to cache briefly at the edge; the directory changes
- * only when the office shares a new allocation.
+ * The directory is public by product decision, so responses carry resident
+ * names and roll numbers; they must never be cached by a shared CDN.
  */
 @RestController
 @RequestMapping("/api/rooms")
@@ -31,7 +30,7 @@ public class RoomsApiController {
     public ResponseEntity<List<RoomResponse>> search(
             @RequestParam(name = "query", required = false) String query) {
         return ResponseEntity.ok()
-                .cacheControl(CacheControl.maxAge(120, TimeUnit.SECONDS).cachePublic())
+                .cacheControl(CacheControl.noStore())
                 .body(search.search(query));
     }
 }

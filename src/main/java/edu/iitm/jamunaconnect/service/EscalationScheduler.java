@@ -37,9 +37,10 @@ public class EscalationScheduler {
     }
 
     @Scheduled(cron = "${app.escalation.cron}")
-    @Transactional(readOnly = true)
+    @Transactional
     public void escalateStaleComplaints() {
-        Instant threshold = Instant.now().minus(afterHours, ChronoUnit.HOURS);
+        Instant now = Instant.now();
+        Instant threshold = now.minus(afterHours, ChronoUnit.HOURS);
         List<Complaint> stale = complaints.findStale(
                 List.of(ComplaintStatus.OPEN, ComplaintStatus.ACKNOWLEDGED), threshold);
         if (stale.isEmpty()) {
@@ -47,6 +48,10 @@ public class EscalationScheduler {
             return;
         }
         log.info("Escalation scan: {} stale complaint(s) past {}h", stale.size(), afterHours);
-        stale.forEach(notifier::escalate);
+        stale.forEach(complaint -> {
+            complaint.setEscalatedAt(now);
+            complaints.save(complaint);
+            notifier.escalate(complaint);
+        });
     }
 }

@@ -11,7 +11,7 @@
 <div th:replace="~{fragments/layout :: nav}"></div>
 <main class="container py-5" style="max-width: 760px;">
     <h1 class="mb-2">Track a complaint</h1>
-    <p class="text-muted">Enter the complaint number you received and the room it was filed from.</p>
+    <p class="text-muted">Enter the complaint number and the random tracking code shown when you filed it.</p>
 
     <form id="track-form" class="card p-4 shadow-sm mb-4">
         <div class="row g-2 align-items-end">
@@ -20,8 +20,9 @@
                 <input class="form-control" id="complaintId" inputmode="numeric" placeholder="12" required/>
             </div>
             <div class="col-sm-5">
-                <label class="form-label" for="room">Room</label>
-                <input class="form-control" id="room" placeholder="254" required/>
+                <label class="form-label" for="trackingToken">Tracking code</label>
+                <input class="form-control" id="trackingToken" name="trackingToken"
+                       autocomplete="off" placeholder="e.g. 8fK2mQ7xLp4A" required/>
             </div>
             <div class="col-sm-3">
                 <button class="btn btn-primary w-100" type="submit">Track</button>

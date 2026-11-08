@@ -1,4 +1,4 @@
-// Resident status check: complaint id + room number, then the audit timeline.
+// Resident status check: complaint id + random tracking code, then the audit timeline.
 (function () {
     const form = document.querySelector("#track-form");
     const out = document.querySelector("#track-result");
@@ -30,12 +30,12 @@
     form.addEventListener("submit", async event => {
         event.preventDefault();
         const id = form.complaintId.value.trim();
-        const room = form.room.value.trim();
+        const token = form.trackingToken.value.trim();
         out.innerHTML = `<p class="muted">Looking up…</p>`;
         try {
-            const res = await fetch(`/api/complaints/${encodeURIComponent(id)}/public?room=${encodeURIComponent(room)}`);
+            const res = await fetch(`/api/complaints/${encodeURIComponent(id)}/public?token=${encodeURIComponent(token)}`);
             if (res.status === 404) {
-                out.innerHTML = `<div class="alert warning">No complaint #${escapeHtml(id)} found for room ${escapeHtml(room)}. Check both values.</div>`;
+                out.innerHTML = `<div class="alert warning">No complaint #${escapeHtml(id)} matches that tracking code.</div>`;
                 return;
             }
             if (!res.ok) throw new Error("HTTP " + res.status);

@@ -12,11 +12,16 @@
     <a href="/contacts">Contacts</a>
     <a href="/lookup">Room Lookup</a>
     <a href="/map">Hostel Map</a>
-    <a href="/notices">Notices</a>
-    <a href="/emergency">Emergency</a>
-    <a href="/wifi">WiFi</a>
     <a href="/complaints/new">File a Complaint</a>
     <a href="/complaints/track">Track</a>
+    <details class="nav-more">
+        <summary>More</summary>
+        <div class="nav-more-menu">
+            <a href="/notices">Notices</a>
+            <a href="/emergency">Emergency</a>
+            <a href="/wifi">WiFi</a>
+        </div>
+    </details>
     <a href="/staff/login">Staff</a>
 </nav>
 <main style="max-width:720px;">
@@ -31,6 +36,11 @@
 
         <label for="roomNumber">Room number</label>
         <input id="roomNumber" name="roomNumber" placeholder="A101" required/>
+
+        <label for="residentEmail">Email (optional)</label>
+        <input id="residentEmail" name="residentEmail" type="email" maxlength="128"
+               placeholder="you@smail.iitm.ac.in"/>
+        <p class="muted" style="font-size:0.85rem;">Used only to mail you when the status changes.</p>
 
         <label for="category">Category</label>
         <select id="category" name="category" required>

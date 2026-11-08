@@ -63,8 +63,9 @@ Flyway applies `db/migration/common` plus `db/migration/postgresql` (which creat
 | GET  | `/api/contacts` | public | Editable contact directory |
 | GET  | `/api/notices` | public | Office-posted notice board |
 | GET  | `/api/emergency` | public | Emergency contacts + first-aid card |
-| POST | `/api/complaints` | public | File a complaint (validated, rate-limited, idempotent) |
-| GET  | `/api/complaints?status=` | staff/warden | List complaints |
+| POST | `/api/complaints` | public | File a complaint (validated, rate-limited, idempotent); optional `residentEmail` enables status mail |
+| GET  | `/api/complaints/{id}/public?token=` | public | Track with complaint id + random code issued at filing |
+| GET  | `/api/complaints?status=` | staff/warden | List complaints (staff only) |
 | GET  | `/api/complaints/{id}/history` | staff/warden | Audit timeline |
 | PATCH| `/api/complaints/{id}` | staff/warden | Append a status transition |
 
@@ -76,6 +77,11 @@ close. Every legal move appends a `complaint_status_history` row and is never
 overwritten. Other illegal jumps (for example `OPEN → RESOLVED`) are rejected with
 `409`, and role violations return `403`.
 
+Public tracking uses a random 16-character code issued at filing, not the sequential
+complaint id or the room number. The public room lookup deliberately keeps resident
+names and room numbers visible, as required by the hostel office; the API is marked
+`Cache-Control: no-store` so this directory is not retained by shared caches.
+
 ## Tests
 
 ```bash
@@ -83,8 +89,14 @@ mvn test        # unit tests (no Docker)
 mvn verify      # adds Testcontainers integration tests when Docker is present
 ```
 
-## Dev credentials
+## Credentials
 
-Seeded by `V2__seed.sql` for local development only — `office` / `office123` and
-`warden` / `warden123`. Rotate before any deployment; secrets come from environment
-variables, never the repository.
+`V2__seed.sql` creates development-only accounts (`office` / `office123`,
+`warden` / `warden123`) for the `local` profile. Production starts with those hashes
+overwritten by `StaffCredentialsSeeder` from `STAFF_*_PASSWORD_HASH` environment
+variables (BCrypt); no production password is stored in git. HTTPS is enabled on the
+EC2 origin via Let's Encrypt; set `SESSION_COOKIE_SECURE=true` there.
+
+Production:
+- app: <https://jamuna-connect.vercel.app/>
+- backend health: <https://jamuna.13.204.197.82.nip.io/actuator/health>

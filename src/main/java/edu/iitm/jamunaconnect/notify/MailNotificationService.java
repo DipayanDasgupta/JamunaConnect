@@ -60,6 +60,27 @@ public class MailNotificationService implements NotificationService {
 
     @Override
     @Async("notificationExecutor")
+    public void statusChanged(Complaint complaint) {
+        String residentEmail = complaint.getResidentEmail();
+        if (!StringUtils.hasText(residentEmail)) {
+            return;
+        }
+        send(residentEmail,
+                "[JamunaConnect] Complaint #" + complaint.getId() + " is now " + complaint.getStatus(),
+                """
+                Your complaint has moved to a new status.
+
+                Id:     #%d
+                Room:   %s
+                Status: %s
+
+                Track the full audit timeline on the Track page using the complaint
+                number and the tracking code shown when you filed it.
+                """.formatted(complaint.getId(), complaint.getRoomNumber(), complaint.getStatus()));
+    }
+
+    @Override
+    @Async("notificationExecutor")
     public void escalate(Complaint complaint) {
         send(escalationEmail,
                 "[JamunaConnect] Escalation: complaint #" + complaint.getId() + " stale over threshold",

@@ -14,8 +14,27 @@
         <h1 class="mb-2">Notice board</h1>
         <p class="text-muted mb-0">Announcements and upcoming events posted by the hostel office.</p>
     </div>
-    <div id="notices-list" class="row g-3"></div>
-    <p id="notices-empty" class="text-muted d-none">No notices posted yet.</p>
+    <div id="notices-list" class="row g-3">
+        <div class="col-md-6 col-xl-4" th:each="n : ${notices}">
+            <article class="card h-100 shadow-sm">
+                <img th:if="${n.imageUrl}" th:src="${n.imageUrl}" class="card-img-top" alt=""
+                     style="height:170px;object-fit:cover;" loading="lazy"/>
+                <div class="card-body d-flex flex-column">
+                    <div class="d-flex justify-content-between align-items-start gap-2">
+                        <h2 class="h5 mb-1" th:text="${n.title}">Notice</h2>
+                        <span class="badge text-bg-light border"
+                              th:text="${#temporals.format(n.eventDate, 'dd MMM yyyy')}">date</span>
+                    </div>
+                    <p class="text-muted small mb-2" th:text="${'Posted by ' + n.postedBy}"></p>
+                    <p class="mb-3" style="white-space:pre-wrap;" th:text="${n.description}"></p>
+                    <a th:if="${n.linkUrl}" class="btn btn-sm btn-primary mt-auto align-self-start"
+                       th:href="${n.linkUrl}" target="_blank" rel="noopener noreferrer">Open link</a>
+                </div>
+            </article>
+        </div>
+    </div>
+    <p id="notices-empty" class="text-muted"
+       th:classappend="${#lists.isEmpty(notices)} ? '' : 'd-none'">No notices posted yet.</p>
 </main>
 <div th:replace="~{fragments/layout :: footer}"></div>
 <script src="/staff-assets/js/notices.js"></script>

@@ -603,3 +603,36 @@ body.auth-page main {
     .hostel-map svg { min-width: 860px; }
     .map-scroll-hint { display: block; }
 }
+
+/* Compact primary navigation: infrequent pages live under "More". */
+.nav-more { position: relative; }
+.nav-more > summary {
+    list-style: none;
+    cursor: pointer;
+    color: #cfe6da;
+    padding: 0.42rem 0.68rem;
+    border-radius: 8px;
+    font-size: 0.92rem;
+    font-weight: 500;
+    white-space: nowrap;
+}
+.nav-more > summary::-webkit-details-marker { display: none; }
+.nav-more > summary:hover { background: rgba(255, 255, 255, 0.1); color: #fff; }
+.nav-more[open] > summary { background: rgba(255, 255, 255, 0.16); color: #fff; }
+.nav-more-menu {
+    position: absolute;
+    top: calc(100% + 0.35rem);
+    left: 0;
+    z-index: 200;
+    display: flex;
+    flex-direction: column;
+    min-width: 10rem;
+    padding: 0.35rem;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 0.7rem;
+    background: #0b3f2e;
+    box-shadow: 0 16px 32px rgba(2, 20, 13, 0.35);
+}
+.navbar-dark .nav-more > summary { color: rgba(255, 255, 255, 0.65); }
+.navbar-dark .nav-more-menu .nav-link { color: rgba(255, 255, 255, 0.75); }
+.navbar-dark .nav-more-menu .nav-link:hover { color: #fff; }

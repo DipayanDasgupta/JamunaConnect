@@ -94,7 +94,7 @@ class ComplaintWorkflowTest {
 
     private Long createComplaint() {
         Complaint complaint = complaints.submit("Workflow Test", "254", ComplaintCategory.OTHER,
-                "Workflow test complaint", "workflow-" + System.nanoTime());
+                "Workflow test complaint", null, "workflow-" + System.nanoTime());
         return complaint.getId();
     }
 

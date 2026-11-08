@@ -4,15 +4,20 @@
 <nav th:fragment="nav" class="navbar navbar-expand-lg navbar-dark bg-dark">
     <div class="container">
         <a class="navbar-brand fw-bold" href="/">JamunaConnect</a>
-        <div class="navbar-nav">
+        <div class="navbar-nav align-items-lg-center flex-wrap">
             <a class="nav-link" href="/contacts">Contacts</a>
             <a class="nav-link" href="/lookup">Room Lookup</a>
             <a class="nav-link" href="/map">Hostel Map</a>
-            <a class="nav-link" href="/notices">Notices</a>
-            <a class="nav-link" href="/emergency">Emergency</a>
-            <a class="nav-link" href="/wifi">WiFi</a>
             <a class="nav-link" href="/complaints/new">File a Complaint</a>
             <a class="nav-link" href="/complaints/track">Track</a>
+            <details class="nav-more">
+                <summary class="nav-link">More</summary>
+                <div class="nav-more-menu">
+                    <a class="nav-link" href="/notices">Notices</a>
+                    <a class="nav-link" href="/emergency">Emergency</a>
+                    <a class="nav-link" href="/wifi">WiFi</a>
+                </div>
+            </details>
             <a class="nav-link" href="/staff/dashboard">Staff</a>
         </div>
     </div>

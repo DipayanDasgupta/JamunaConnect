@@ -6,8 +6,11 @@
     const categorySelect = document.querySelector("#category");
     const otherWrap = document.querySelector("#otherCategoryWrap");
     const otherInput = document.querySelector("#otherCategory");
-    const clientToken = (crypto.randomUUID ? crypto.randomUUID()
-        : String(Date.now()) + Math.random().toString(16).slice(2));
+    let clientToken = newClientToken();
+    function newClientToken() {
+        return crypto.randomUUID ? crypto.randomUUID()
+            : String(Date.now()) + Math.random().toString(16).slice(2);
+    }
 
     function toggleOther() {
         const isOther = categorySelect.value === "OTHER";
@@ -48,6 +51,7 @@
             roomNumber: form.roomNumber.value.trim(),
             category: categorySelect.value,
             description: isOther ? `[${other}] ${description}` : description,
+            residentEmail: form.residentEmail.value.trim() || null,
             clientToken
         };
         try {
@@ -66,10 +70,11 @@
                 return;
             }
             const saved = await res.json();
-            show("success", `Complaint #${saved.id} filed. The hostel office has been notified; ` +
-                `you can check its status from the dashboard.`);
+            show("success", `Complaint #${saved.id} filed. Save this tracking code: ` +
+                `${saved.trackingToken} — use it with the complaint number on the Track page.`);
             form.reset();
             toggleOther();
+            clientToken = newClientToken();
         } catch (err) {
             show("danger", "Network error. Please try again.");
             console.error(err);

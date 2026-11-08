@@ -4,6 +4,7 @@ import edu.iitm.jamunaconnect.domain.Complaint;
 import edu.iitm.jamunaconnect.domain.ComplaintStatus;
 import edu.iitm.jamunaconnect.service.ComplaintService;
 import edu.iitm.jamunaconnect.service.RateLimiter;
+import edu.iitm.jamunaconnect.web.ClientIp;
 import edu.iitm.jamunaconnect.web.dto.ComplaintRequest;
 import edu.iitm.jamunaconnect.web.dto.ComplaintResponse;
 import edu.iitm.jamunaconnect.web.dto.HistoryResponse;
@@ -42,11 +43,12 @@ public class ComplaintsApiController {
     @PostMapping
     public ResponseEntity<ComplaintResponse> file(@Valid @RequestBody ComplaintRequest request,
                                                    HttpServletRequest http) {
-        if (!rateLimiter.allow(clientIp(http))) {
+        if (!rateLimiter.allow(ClientIp.resolve(http))) {
             return ResponseEntity.status(HttpStatus.TOO_MANY_REQUESTS).build();
         }
         Complaint saved = complaints.submit(request.getSubmitterName(), request.getRoomNumber(),
-                request.getCategory(), request.getDescription(), request.getClientToken());
+                request.getCategory(), request.getDescription(), request.getResidentEmail(),
+                request.getClientToken());
         return ResponseEntity.status(HttpStatus.CREATED).body(ComplaintResponse.from(saved));
     }
 
@@ -62,11 +64,11 @@ public class ComplaintsApiController {
         return ComplaintResponse.from(complaints.get(id));
     }
 
-    /** Public status check: complaint id + the room it was filed from. */
+    /** Public status check: complaint id + the random code issued at filing. */
     @GetMapping("/{id}/public")
     public PublicComplaintResponse publicStatus(@PathVariable Long id,
-                                                @RequestParam("room") String room) {
-        Complaint c = complaints.getForResident(id, room);
+                                                @RequestParam("token") String token) {
+        Complaint c = complaints.getForResident(id, token);
         List<HistoryResponse> hist = complaints.timeline(id).stream()
                 .map(h -> new HistoryResponse(h.getId(),
                         h.getOldStatus() == null ? null : h.getOldStatus().name(),
@@ -102,11 +104,4 @@ public class ComplaintsApiController {
         return ComplaintResponse.from(complaints.changeStatus(id, request.getStatus(), changedBy));
     }
 
-    private String clientIp(HttpServletRequest request) {
-        String forwarded = request.getHeader("X-Forwarded-For");
-        if (forwarded != null && !forwarded.isBlank()) {
-            return forwarded.split(",")[0].trim();
-        }
-        return request.getRemoteAddr();
-    }
 }

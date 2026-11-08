@@ -2,6 +2,7 @@ package edu.iitm.jamunaconnect.security;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -12,6 +13,7 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.DelegatingAuthenticationEntryPoint;
 import org.springframework.security.web.authentication.www.BasicAuthenticationEntryPoint;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
+import edu.iitm.jamunaconnect.service.LoginAttemptService;
 
 import java.util.LinkedHashMap;
 
@@ -30,8 +32,9 @@ public class SecurityConfig {
     }
 
     @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+    public SecurityFilterChain filterChain(HttpSecurity http, LoginAttemptService loginAttempts) throws Exception {
         http
+            .addFilterBefore(new LoginRateLimitFilter(loginAttempts), UsernamePasswordAuthenticationFilter.class)
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers(
                         "/", "/lookup", "/map", "/contacts", "/notices", "/emergency", "/wifi",
@@ -42,7 +45,7 @@ public class SecurityConfig {
                     .permitAll()
                 // Residents file complaints anonymously.
                 .requestMatchers(HttpMethod.POST, "/api/complaints").permitAll()
-                // Residents check their own complaint with id + room.
+                // Residents check their own complaint with id + tracking token.
                 .requestMatchers(HttpMethod.GET, "/api/complaints/*/public").permitAll()
                 .requestMatchers("/staff/**").hasAnyRole("OFFICE_STAFF", "WARDEN")
                 .requestMatchers("/api/complaints/**", "/api/complaints").hasAnyRole("OFFICE_STAFF", "WARDEN")

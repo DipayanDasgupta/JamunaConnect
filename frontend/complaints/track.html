@@ -12,17 +12,22 @@
     <a href="/contacts">Contacts</a>
     <a href="/lookup">Room Lookup</a>
     <a href="/map">Hostel Map</a>
-    <a href="/notices">Notices</a>
-    <a href="/emergency">Emergency</a>
-    <a href="/wifi">WiFi</a>
     <a href="/complaints/new">File a Complaint</a>
     <a href="/complaints/track">Track</a>
+    <details class="nav-more">
+        <summary>More</summary>
+        <div class="nav-more-menu">
+            <a href="/notices">Notices</a>
+            <a href="/emergency">Emergency</a>
+            <a href="/wifi">WiFi</a>
+        </div>
+    </details>
     <a href="/staff/login">Staff</a>
 </nav>
 <main style="max-width:760px;">
     <div class="page-head">
         <h1>Track a complaint</h1>
-        <p>Enter the complaint number you received and the room it was filed from.</p>
+        <p>Enter the complaint number and the random tracking code shown when you filed it.</p>
     </div>
 
     <form id="track-form" class="card">
@@ -32,8 +37,8 @@
                 <input id="complaintId" inputmode="numeric" placeholder="12" required/>
             </div>
             <div>
-                <label for="room">Room</label>
-                <input id="room" placeholder="254" required/>
+                <label for="trackingToken">Tracking code</label>
+                <input id="trackingToken" autocomplete="off" placeholder="e.g. 8fK2mQ7xLp4A" required/>
             </div>
             <div style="flex:0 0 auto;">
                 <button class="btn" type="submit">Track</button>

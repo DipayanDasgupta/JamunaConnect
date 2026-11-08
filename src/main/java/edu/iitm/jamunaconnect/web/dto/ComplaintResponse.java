@@ -7,11 +7,13 @@ import java.time.Instant;
 
 public record ComplaintResponse(Long id, String submitterName, String roomNumber,
                                 String category, String description, ComplaintStatus status,
+                                String trackingToken, String residentEmail,
                                 Instant createdAt, Instant updatedAt) {
 
     public static ComplaintResponse from(Complaint c) {
         return new ComplaintResponse(c.getId(), c.getSubmitterName(), c.getRoomNumber(),
                 c.getCategory() == null ? null : c.getCategory().name(),
-                c.getDescription(), c.getStatus(), c.getCreatedAt(), c.getUpdatedAt());
+                c.getDescription(), c.getStatus(), c.getTrackingToken(), c.getResidentEmail(),
+                c.getCreatedAt(), c.getUpdatedAt());
     }
 }

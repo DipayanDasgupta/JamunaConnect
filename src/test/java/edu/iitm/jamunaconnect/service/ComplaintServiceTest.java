@@ -43,10 +43,11 @@ class ComplaintServiceTest {
         when(complaints.findByClientToken("token-1")).thenReturn(Optional.empty());
 
         Complaint saved = service.submit("Ravi", "a101", ComplaintCategory.WATER,
-                "No water on the floor", "token-1");
+                "No water on the floor", null, "token-1");
 
         assertThat(saved.getRoomNumber()).isEqualTo("A101");
         assertThat(saved.getStatus()).isEqualTo(ComplaintStatus.OPEN);
+        assertThat(saved.getTrackingToken()).isNotBlank().hasSizeGreaterThanOrEqualTo(8);
         verify(history, times(1)).save(any(ComplaintStatusHistory.class));
         verify(notifier, times(1)).complaintFiled(saved);
     }
@@ -55,10 +56,11 @@ class ComplaintServiceTest {
     void retriedSubmitReturnsExistingRowWithoutDuplicating() {
         Complaint existing = new Complaint();
         existing.setId(42L);
+        existing.setTrackingToken("existing-token");
         when(complaints.findByClientToken("token-dup")).thenReturn(Optional.of(existing));
 
         Complaint result = service.submit("Ravi", "A101", ComplaintCategory.WATER,
-                "No water", "token-dup");
+                "No water", null, "token-dup");
 
         assertThat(result.getId()).isEqualTo(42L);
         verify(complaints, never()).save(any());

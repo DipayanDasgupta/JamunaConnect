@@ -22,9 +22,11 @@
                     <h2 class="h5">First-aid kit</h2>
                     <p class="text-muted small mb-3">Contents are maintained by the hostel office.</p>
                     <h3 class="h6 text-uppercase text-muted">Contents</h3>
-                    <p id="first-aid-contents" class="mb-3">Loading&hellip;</p>
+                    <p id="first-aid-contents" class="mb-3"
+                       th:text="${firstAid != null and firstAid.contents != null ? firstAid.contents : 'Not added yet.'}">Loading&hellip;</p>
                     <h3 class="h6 text-uppercase text-muted">Usage guidelines</h3>
-                    <p id="first-aid-guidelines" class="mb-0">Loading&hellip;</p>
+                    <p id="first-aid-guidelines" class="mb-0"
+                       th:text="${firstAid != null and firstAid.guidelines != null ? firstAid.guidelines : 'Not added yet.'}">Loading&hellip;</p>
                 </div>
             </div>
         </div>
@@ -34,7 +36,15 @@
                     <h2 class="h5">Emergency contacts</h2>
                     <p class="text-muted small">Call the Security Desk first for any incident inside the hostel.</p>
                     <div id="emergency-contacts" class="list-group list-group-flush">
-                        <p class="text-muted">Loading&hellip;</p>
+                        <a th:each="c : ${emergencyContacts}"
+                           class="list-group-item list-group-item-action d-flex justify-content-between align-items-center gap-3"
+                           th:href="${'tel:' + c.phone}">
+                            <span class="fw-semibold" th:text="${c.roleTitle}"></span>
+                            <span class="text-muted" th:text="${c.phone}"></span>
+                        </a>
+                        <p th:if="${#lists.isEmpty(emergencyContacts)}" class="text-muted">
+                            No emergency contacts added yet.
+                        </p>
                     </div>
                 </div>
             </div>

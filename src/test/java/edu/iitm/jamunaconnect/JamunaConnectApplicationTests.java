@@ -56,6 +56,7 @@ class JamunaConnectApplicationTests {
         assertThat(first.getStatusCode()).isEqualTo(HttpStatus.CREATED);
         Number id = (Number) first.getBody().get("id");
         assertThat(first.getBody().get("status")).isEqualTo(ComplaintStatus.OPEN.name());
+        assertThat(first.getBody().get("trackingToken")).asString().hasSizeGreaterThanOrEqualTo(8);
 
         ResponseEntity<Map> second = rest.postForEntity("/api/complaints", body, Map.class);
         assertThat(((Number) second.getBody().get("id")).longValue()).isEqualTo(id.longValue());
@@ -63,6 +64,16 @@ class JamunaConnectApplicationTests {
         ResponseEntity<String> history = rest.withBasicAuth("office", "office123")
                 .getForEntity("/api/complaints/{id}/history", String.class, id.longValue());
         assertThat(history.getBody()).contains("OPEN");
+
+        String token = (String) first.getBody().get("trackingToken");
+        ResponseEntity<String> track = rest.getForEntity(
+                "/api/complaints/{id}/public?token={token}", String.class, id.longValue(), token);
+        assertThat(track.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(track.getBody()).contains("No water on the floor");
+
+        ResponseEntity<String> wrong = rest.getForEntity(
+                "/api/complaints/{id}/public?token=nope", String.class, id.longValue());
+        assertThat(wrong.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
     }
 
     @Test

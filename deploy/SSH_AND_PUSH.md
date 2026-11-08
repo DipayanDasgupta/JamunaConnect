@@ -3,7 +3,8 @@
 Backend host: one EC2 instance (Ubuntu 24.04, Java 21 JRE, PostgreSQL with
 `pg_trgm` on the same box). The app runs as a systemd service named `jamuna`,
 as the `jamuna` user, from `/opt/jamuna/app.jar`, on port 8080, behind nginx
-(port 80 → `127.0.0.1:8080`). Secrets live in `/opt/jamuna/app.env`
+(HTTP/HTTPS → `127.0.0.1:8080`). The public origin is
+`https://jamuna.13.204.197.82.nip.io`; certbot renews the certificate automatically. Secrets live in `/opt/jamuna/app.env`
 (mode 0600) — never in the repo. Instance: `i-0c3c936ad498e2861`,
 artifact bucket: `s3://jamuna-artifacts-552916920281/jamuna.jar`.
 
@@ -57,8 +58,8 @@ first; `deploy-frontend` and `deploy-backend` only run from green `main`.
 Verify after:
 
 ```bash
-curl -s https://jamuna-connect.vercel.app/ | head -3   # frontend live
-curl -s http://<host>:8080/actuator/health             # backend UP
+curl -s https://jamuna-connect.vercel.app/ | head -3          # frontend live
+curl -s https://jamuna.13.204.197.82.nip.io/actuator/health  # backend UP over TLS
 ```
 
 ## 3. Pushing manually (emergency / viva demo)

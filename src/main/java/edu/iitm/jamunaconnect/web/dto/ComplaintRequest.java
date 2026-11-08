@@ -1,6 +1,7 @@
 package edu.iitm.jamunaconnect.web.dto;
 
 import edu.iitm.jamunaconnect.domain.ComplaintCategory;
+import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
@@ -24,6 +25,11 @@ public class ComplaintRequest {
     @NotBlank
     @Size(max = 2000)
     private String description;
+
+    /** Optional: receive a mail when the complaint changes status. */
+    @Email
+    @Size(max = 128)
+    private String residentEmail;
 
     /** Optional idempotency key from the browser (double-submit protection). */
     @Size(max = 64)
@@ -59,6 +65,14 @@ public class ComplaintRequest {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public String getResidentEmail() {
+        return residentEmail;
+    }
+
+    public void setResidentEmail(String residentEmail) {
+        this.residentEmail = residentEmail;
     }
 
     public String getClientToken() {

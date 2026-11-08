@@ -49,6 +49,16 @@ class ContentFeatureTest {
     }
 
     @Test
+    void publicRoomLookupStillShowsResidentNamesAndRooms() throws Exception {
+        mvc.perform(get("/api/rooms").param("query", "DIPAYAN"))
+                .andExpect(status().isOk())
+                .andExpect(org.springframework.test.web.servlet.result.MockMvcResultMatchers.header()
+                        .string("Cache-Control", org.hamcrest.Matchers.containsString("no-store")))
+                .andExpect(content().string(org.hamcrest.Matchers.containsString("DIPAYAN DASGUPTA")))
+                .andExpect(content().string(org.hamcrest.Matchers.containsString("254")));
+    }
+
+    @Test
     void emergencyApiServesSeededSecurityDesk() throws Exception {
         mvc.perform(get("/api/emergency"))
                 .andExpect(status().isOk())

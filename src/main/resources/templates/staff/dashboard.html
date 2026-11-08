@@ -99,6 +99,8 @@
                         <div class="text-muted small text-truncate complaint-desc"
                              style="max-width: 26rem;" th:text="${c.description}"
                              th:title="${c.description}"></div>
+                        <a th:if="${c.residentEmail}" class="small"
+                           th:href="${'mailto:' + c.residentEmail}" th:text="${c.residentEmail}"></a>
                     </td>
                     <td><span class="badge text-white status-badge"
                               th:text="${c.status.name() == 'WARDEN_REVIEW' ? 'WARDEN REVIEW' : c.status}"

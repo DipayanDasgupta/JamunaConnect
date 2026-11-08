@@ -14,18 +14,21 @@ public interface ComplaintRepository extends JpaRepository<Complaint, Long> {
 
     Optional<Complaint> findByClientToken(String clientToken);
 
+    List<Complaint> findByTrackingTokenIsNull();
+
     List<Complaint> findAllByOrderByCreatedAtDesc();
 
     List<Complaint> findByStatusOrderByCreatedAtAsc(ComplaintStatus status);
 
     /**
-     * Complaints stuck in Open/Acknowledged past the escalation threshold.
-     * Used by the daily scheduler.
+     * Complaints stuck in Open/Acknowledged past the escalation threshold that
+     * have never been escalated. Used by the daily scheduler.
      */
     @Query("""
             SELECT c FROM Complaint c
             WHERE c.status IN :statuses
               AND c.createdAt < :threshold
+              AND c.escalatedAt IS NULL
             ORDER BY c.createdAt
             """)
     List<Complaint> findStale(@Param("statuses") List<ComplaintStatus> statuses,

@@ -25,8 +25,14 @@ cat target/jamunaconnect-*.jar | ssh ubuntu@<host> \
 ssh ubuntu@<host> 'sudo systemctl restart jamuna'
 ```
 
-`nginx-jamuna.conf` proxies port 80 to `127.0.0.1:8080` and forwards
+`nginx-jamuna.conf` proxies HTTP to `127.0.0.1:8080` and forwards
 `X-Forwarded-For`, so the API's per-IP rate limit sees the real client address.
+
+Production HTTPS is terminated on the instance with a Let's Encrypt certificate for
+`jamuna.13.204.197.82.nip.io` (certbot's nginx plugin redirects HTTP to HTTPS and
+installs an auto-renew timer). Because Vercel rewrites to that HTTPS origin, Spring
+receives `X-Forwarded-Proto: https` and `X-Forwarded-Host` and keeps redirects on the
+public host.
 
 ## Environment
 
@@ -35,8 +41,21 @@ See `.env.example`. In production these come from `/opt/jamuna/app.env`
 environment, as the design doc requires. Leaving `SMTP_HOST` blank keeps notifications
 in the in-app queue; the complaint workflow still works.
 
+Production must also set:
+
+- `STAFF_OFFICE_USERNAME`, `STAFF_OFFICE_PASSWORD_HASH`, `STAFF_OFFICE_DISPLAY_NAME`
+- `STAFF_WARDEN_USERNAME`, `STAFF_WARDEN_PASSWORD_HASH`, `STAFF_WARDEN_DISPLAY_NAME`
+- `SESSION_COOKIE_SECURE=true` behind HTTPS
+
+`StaffCredentialsSeeder` upserts those BCrypt hashes on boot, replacing the
+development `office123` / `warden123` accounts. Keep the plaintext passwords out of
+git and out of shell history.
+
 ## Re-deploying
 
-Rebuild, copy the jar, `systemctl restart jamuna`; Flyway applies any new migrations on
-startup. The seeded office/warden credentials are development-only and must be rotated
-via a migration before the hostel office uses the system.
+The normal path is a push to `main`: CI runs `mvn verify`, uploads the jar to S3, and
+restarts the service over SSM. The deploy step now polls
+`http://127.0.0.1:8080/actuator/health` and prints recent journal lines if the app does
+not become healthy. Flyway applies new migrations before the app serves traffic.
+Development staff credentials are never used in production; the environment hashes
+replace them.

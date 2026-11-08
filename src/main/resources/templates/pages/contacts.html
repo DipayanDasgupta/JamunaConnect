@@ -15,7 +15,23 @@
         one-row update, not a code change.</p>
     <table class="table table-striped align-middle" id="contacts-table">
         <thead><tr><th>Role</th><th>Name</th><th>Phone</th><th>Email</th></tr></thead>
-        <tbody></tbody>
+        <tbody>
+        <tr th:each="c : ${contacts}">
+            <td th:text="${c.role}"></td>
+            <td th:text="${c.name}"></td>
+            <td>
+                <a th:if="${c.phone}" th:href="${'tel:' + c.phone}" th:text="${c.phone}"></a>
+                <span th:unless="${c.phone}" class="text-muted">&mdash;</span>
+            </td>
+            <td>
+                <a th:if="${c.email}" th:href="${'mailto:' + c.email}" th:text="${c.email}"></a>
+                <span th:unless="${c.email}" class="text-muted">&mdash;</span>
+            </td>
+        </tr>
+        <tr th:if="${#lists.isEmpty(contacts)}">
+            <td colspan="4" class="text-muted text-center">No contacts yet.</td>
+        </tr>
+        </tbody>
     </table>
 </main>
 <div th:replace="~{fragments/layout :: footer}"></div>

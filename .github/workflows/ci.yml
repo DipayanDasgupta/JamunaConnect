@@ -89,7 +89,7 @@ jobs:
           CMD_ID=$(aws ssm send-command \
             --instance-ids i-0c3c936ad498e2861 \
             --document-name AWS-RunShellScript \
-            --parameters 'commands=["set -e","aws s3 cp s3://jamuna-artifacts-552916920281/jamuna.jar /tmp/app.jar","sudo mv /tmp/app.jar /opt/jamuna/app.jar","sudo chown jamuna:jamuna /opt/jamuna/app.jar","sudo systemctl restart jamuna","sleep 5","systemctl is-active jamuna"]' \
+            --parameters 'commands=["set -e","aws s3 cp s3://jamuna-artifacts-552916920281/jamuna.jar /tmp/app.jar","sudo mv /tmp/app.jar /opt/jamuna/app.jar","sudo chown jamuna:jamuna /opt/jamuna/app.jar","sudo systemctl restart jamuna","for i in $(seq 1 60); do curl -fsS http://127.0.0.1:8080/actuator/health && exit 0; sleep 2; done; sudo journalctl -u jamuna -n 80 --no-pager; exit 1"]' \
             --query 'Command.CommandId' --output text)
           echo "SSM command: $CMD_ID"
           for i in $(seq 1 30); do

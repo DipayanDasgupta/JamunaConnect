@@ -44,6 +44,18 @@ public class Complaint {
     @Column(name = "client_token", length = 64, unique = true)
     private String clientToken;
 
+    /** Random, high-entropy secret required to read a complaint publicly. */
+    @Column(name = "tracking_token", length = 32, unique = true)
+    private String trackingToken;
+
+    /** Optional resident address for status-change mail; never required. */
+    @Column(name = "resident_email", length = 128)
+    private String residentEmail;
+
+    /** Set once by the escalation scan so the Warden is not mailed every day. */
+    @Column(name = "escalated_at")
+    private Instant escalatedAt;
+
     @Column(name = "created_at", nullable = false)
     private Instant createdAt = Instant.now();
 
@@ -112,6 +124,30 @@ public class Complaint {
 
     public void setClientToken(String clientToken) {
         this.clientToken = clientToken;
+    }
+
+    public String getTrackingToken() {
+        return trackingToken;
+    }
+
+    public void setTrackingToken(String trackingToken) {
+        this.trackingToken = trackingToken;
+    }
+
+    public String getResidentEmail() {
+        return residentEmail;
+    }
+
+    public void setResidentEmail(String residentEmail) {
+        this.residentEmail = residentEmail;
+    }
+
+    public Instant getEscalatedAt() {
+        return escalatedAt;
+    }
+
+    public void setEscalatedAt(Instant escalatedAt) {
+        this.escalatedAt = escalatedAt;
     }
 
     public Instant getCreatedAt() {

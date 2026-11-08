@@ -10,6 +10,8 @@ import edu.iitm.jamunaconnect.repository.ComplaintStatusHistoryRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
 import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
@@ -39,11 +41,16 @@ public class ComplaintService {
      */
     @Transactional
     public Complaint submit(String submitterName, String roomNumber, ComplaintCategory category,
-                            String description, String clientToken) {
+                            String description, String residentEmail, String clientToken) {
         if (clientToken != null) {
             Optional<Complaint> existing = complaints.findByClientToken(clientToken);
             if (existing.isPresent()) {
-                return existing.get();
+                Complaint found = existing.get();
+                if (found.getTrackingToken() == null) {
+                    found.setTrackingToken(TrackingTokens.newToken());
+                    complaints.save(found);
+                }
+                return found;
             }
         }
         Complaint complaint = new Complaint();
@@ -53,6 +60,8 @@ public class ComplaintService {
         complaint.setDescription(description.trim());
         complaint.setStatus(ComplaintStatus.OPEN);
         complaint.setClientToken(clientToken);
+        complaint.setTrackingToken(TrackingTokens.newToken());
+        complaint.setResidentEmail(normalizeEmail(residentEmail));
         Instant now = Instant.now();
         complaint.setCreatedAt(now);
         complaint.setUpdatedAt(now);
@@ -97,6 +106,7 @@ public class ComplaintService {
         entry.setChangedBy(changedBy == null || changedBy.isBlank() ? "staff" : changedBy);
         entry.setChangedAt(Instant.now());
         history.save(entry);
+        notifier.statusChanged(complaint);
         return complaint;
     }
 
@@ -106,16 +116,26 @@ public class ComplaintService {
     }
 
     /**
-     * Resident-facing status check: the room number acts as a weak shared
-     * secret so a complaint id alone is not enough to read someone's report.
+     * Resident-facing status check: the random tracking token is the shared
+     * secret, so an enumerable complaint id or room number is not enough.
      */
     @Transactional(readOnly = true)
-    public Complaint getForResident(Long id, String roomNumber) {
+    public Complaint getForResident(Long id, String trackingToken) {
         Complaint complaint = get(id);
-        if (roomNumber == null || !complaint.getRoomNumber().equalsIgnoreCase(roomNumber.trim())) {
-            throw new IllegalArgumentException("No complaint " + id + " for that room");
+        String expected = complaint.getTrackingToken();
+        if (expected == null || trackingToken == null || trackingToken.isBlank()
+                || !MessageDigest.isEqual(expected.getBytes(StandardCharsets.UTF_8),
+                        trackingToken.trim().getBytes(StandardCharsets.UTF_8))) {
+            throw new IllegalArgumentException("No complaint " + id + " for that tracking code");
         }
         return complaint;
+    }
+
+    private static String normalizeEmail(String value) {
+        if (value == null || value.isBlank()) {
+            return null;
+        }
+        return value.trim().toLowerCase();
     }
 
     @Transactional(readOnly = true)

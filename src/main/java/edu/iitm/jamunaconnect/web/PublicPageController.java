@@ -1,6 +1,9 @@
 package edu.iitm.jamunaconnect.web;
 
 import edu.iitm.jamunaconnect.domain.ComplaintCategory;
+import edu.iitm.jamunaconnect.repository.ContactRepository;
+import edu.iitm.jamunaconnect.service.EmergencyService;
+import edu.iitm.jamunaconnect.service.NoticeService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -9,13 +12,25 @@ import org.springframework.web.bind.annotation.GetMapping;
 @Controller
 public class PublicPageController {
 
+    private final ContactRepository contacts;
+    private final NoticeService notices;
+    private final EmergencyService emergency;
+
+    public PublicPageController(ContactRepository contacts, NoticeService notices,
+                                EmergencyService emergency) {
+        this.contacts = contacts;
+        this.notices = notices;
+        this.emergency = emergency;
+    }
+
     @GetMapping("/")
     public String home() {
         return "pages/home";
     }
 
     @GetMapping("/contacts")
-    public String contacts() {
+    public String contacts(Model model) {
+        model.addAttribute("contacts", contacts.findAllByOrderByDisplayOrderAsc());
         return "pages/contacts";
     }
 
@@ -30,12 +45,15 @@ public class PublicPageController {
     }
 
     @GetMapping("/notices")
-    public String notices() {
+    public String notices(Model model) {
+        model.addAttribute("notices", notices.list());
         return "pages/notices";
     }
 
     @GetMapping("/emergency")
-    public String emergency() {
+    public String emergency(Model model) {
+        model.addAttribute("firstAid", emergency.firstAid());
+        model.addAttribute("emergencyContacts", emergency.contacts());
         return "pages/emergency";
     }
 

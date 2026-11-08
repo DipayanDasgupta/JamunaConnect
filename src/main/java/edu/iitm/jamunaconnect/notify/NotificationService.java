@@ -9,4 +9,7 @@ public interface NotificationService {
 
     /** Called by the daily escalation scan for a stale complaint. */
     void escalate(Complaint complaint);
+
+    /** Called after a status transition when the resident supplied an email. */
+    void statusChanged(Complaint complaint);
 }

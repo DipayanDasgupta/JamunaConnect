@@ -3,11 +3,11 @@
   "cleanUrls": true,
   "trailingSlash": false,
   "rewrites": [
-    { "source": "/api/:path*", "destination": "http://13.204.197.82/api/:path*" },
-    { "source": "/actuator/:path*", "destination": "http://13.204.197.82/actuator/:path*" },
-    { "source": "/staff-assets/:path*", "destination": "http://13.204.197.82/staff-assets/:path*" },
-    { "source": "/staff/:path*", "destination": "http://13.204.197.82/staff/:path*" },
-    { "source": "/staff", "destination": "http://13.204.197.82/staff/login" }
+    { "source": "/api/:path*", "destination": "https://jamuna.13.204.197.82.nip.io/api/:path*" },
+    { "source": "/actuator/:path*", "destination": "https://jamuna.13.204.197.82.nip.io/actuator/:path*" },
+    { "source": "/staff-assets/:path*", "destination": "https://jamuna.13.204.197.82.nip.io/staff-assets/:path*" },
+    { "source": "/staff/:path*", "destination": "https://jamuna.13.204.197.82.nip.io/staff/:path*" },
+    { "source": "/staff", "destination": "https://jamuna.13.204.197.82.nip.io/staff/login" }
   ],
   "headers": [
     {
