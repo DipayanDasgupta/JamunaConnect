@@ -7,17 +7,20 @@ import static org.assertj.core.api.Assertions.assertThat;
 class ComplaintStatusTest {
 
     @Test
-    void openCanBeAcknowledgedOrStartedButNotResolvedDirectly() {
+    void openCanBeAcknowledgedStartedOrForwardedButNotResolvedOrClosed() {
         assertThat(ComplaintStatus.OPEN.canTransitionTo(ComplaintStatus.ACKNOWLEDGED)).isTrue();
         assertThat(ComplaintStatus.OPEN.canTransitionTo(ComplaintStatus.IN_PROGRESS)).isTrue();
+        assertThat(ComplaintStatus.OPEN.canTransitionTo(ComplaintStatus.WARDEN_REVIEW)).isTrue();
         assertThat(ComplaintStatus.OPEN.canTransitionTo(ComplaintStatus.RESOLVED)).isFalse();
+        assertThat(ComplaintStatus.OPEN.canTransitionTo(ComplaintStatus.CLOSED)).isFalse();
     }
 
     @Test
-    void anyNonClosedStateCanBeClosedDirectly() {
+    void onlyWardenReviewCanBeClosed() {
+        assertThat(ComplaintStatus.WARDEN_REVIEW.canTransitionTo(ComplaintStatus.CLOSED)).isTrue();
         for (ComplaintStatus status : ComplaintStatus.values()) {
-            if (status != ComplaintStatus.CLOSED) {
-                assertThat(status.canTransitionTo(ComplaintStatus.CLOSED)).isTrue();
+            if (status != ComplaintStatus.WARDEN_REVIEW) {
+                assertThat(status.canTransitionTo(ComplaintStatus.CLOSED)).isFalse();
             }
         }
     }
@@ -34,6 +37,7 @@ class ComplaintStatusTest {
         assertThat(ComplaintStatus.OPEN.canTransitionTo(ComplaintStatus.ACKNOWLEDGED)).isTrue();
         assertThat(ComplaintStatus.ACKNOWLEDGED.canTransitionTo(ComplaintStatus.IN_PROGRESS)).isTrue();
         assertThat(ComplaintStatus.IN_PROGRESS.canTransitionTo(ComplaintStatus.RESOLVED)).isTrue();
-        assertThat(ComplaintStatus.RESOLVED.canTransitionTo(ComplaintStatus.CLOSED)).isTrue();
+        assertThat(ComplaintStatus.RESOLVED.canTransitionTo(ComplaintStatus.WARDEN_REVIEW)).isTrue();
+        assertThat(ComplaintStatus.WARDEN_REVIEW.canTransitionTo(ComplaintStatus.CLOSED)).isTrue();
     }
 }

@@ -25,19 +25,19 @@
     <div th:replace="~{fragments/layout :: staffNav}"></div>
 
     <div class="row g-2 mb-3" id="stat-cards">
-        <div class="col-6 col-md-2" th:each="s : ${statuses}">
+        <div class="col-6 col-md-4 col-xl" th:each="s : ${statuses}">
             <a th:href="@{/staff/dashboard(status=${s})}" class="text-decoration-none">
                 <div class="card text-center shadow-sm stat-card"
                      th:classappend="${s == selectedStatus} ? 'border-primary' : ''">
                     <div class="card-body py-2">
                         <div class="fs-4 fw-bold" th:text="${counts.get(s)}"
                              th:attr="data-count=${s}">0</div>
-                        <div class="small text-muted" th:text="${s}">OPEN</div>
+                        <div class="small text-muted" th:text="${s.name() == 'WARDEN_REVIEW' ? 'WARDEN REVIEW' : s}">OPEN</div>
                     </div>
                 </div>
             </a>
         </div>
-        <div class="col-6 col-md-2">
+        <div class="col-6 col-md-4 col-xl">
             <a th:href="@{/staff/dashboard}" class="text-decoration-none">
                 <div class="card text-center shadow-sm stat-card"
                      th:classappend="${selectedStatus == null} ? 'border-primary' : ''">
@@ -57,7 +57,8 @@
                     <label class="form-label small mb-1" for="filter-status">Status</label>
                     <select class="form-select form-select-sm" id="filter-status">
                         <option value="">All statuses</option>
-                        <option th:each="s : ${statuses}" th:value="${s}" th:text="${s}"
+                        <option th:each="s : ${statuses}" th:value="${s}"
+                                th:text="${s.name() == 'WARDEN_REVIEW' ? 'Warden review' : s}"
                                 th:selected="${s == selectedStatus}"></option>
                     </select>
                 </div>
@@ -84,7 +85,7 @@
             <table class="table table-hover align-middle mb-0" id="complaints-table">
                 <thead class="table-light">
                 <tr><th>#</th><th>Room</th><th>Category</th><th>Complaint</th><th>Status</th>
-                    <th>Age</th><th style="min-width: 11rem;">Move to</th><th></th></tr>
+                    <th>Age</th><th style="min-width: 12rem;">Action</th><th></th></tr>
                 </thead>
                 <tbody>
                 <tr th:each="c : ${complaints}" th:attr="data-id=${c.id}">
@@ -99,7 +100,9 @@
                              style="max-width: 26rem;" th:text="${c.description}"
                              th:title="${c.description}"></div>
                     </td>
-                    <td><span class="badge text-white status-badge" th:text="${c.status}"
+                    <td><span class="badge text-white status-badge"
+                              th:text="${c.status.name() == 'WARDEN_REVIEW' ? 'WARDEN REVIEW' : c.status}"
+                              th:attr="data-status=${c.status}"
                               th:classappend="' status-' + ${c.status}"></span></td>
                     <td class="small text-muted age-cell"
                         th:attr="data-created=${c.createdAt}"
@@ -109,11 +112,15 @@
                             <div class="d-flex gap-1" th:if="${!#lists.isEmpty(moves)}">
                                 <select class="form-select form-select-sm transition-target">
                                     <option th:each="s : ${moves}" th:value="${s}"
-                                            th:text="${s}"></option>
+                                            th:text="${s.name() == 'WARDEN_REVIEW' ? 'Forward to Warden' : s}"></option>
                                 </select>
                                 <button class="btn btn-sm btn-primary apply-transition">Apply</button>
                             </div>
-                            <span th:if="${#lists.isEmpty(moves)}" class="text-muted small">No further moves</span>
+                            <span th:if="${#lists.isEmpty(moves)}" class="text-muted small">
+                                <span th:if="${c.status.name() == 'WARDEN_REVIEW' and !isWarden}">Awaiting Warden approval</span>
+                                <span th:if="${c.status.name() == 'CLOSED'}">Closed</span>
+                                <span th:if="${c.status.name() != 'WARDEN_REVIEW' and c.status.name() != 'CLOSED'}">No further moves</span>
+                            </span>
                         </div>
                     </td>
                     <td>

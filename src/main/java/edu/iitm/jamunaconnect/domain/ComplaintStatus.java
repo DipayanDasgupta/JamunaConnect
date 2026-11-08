@@ -9,15 +9,20 @@ public enum ComplaintStatus {
     ACKNOWLEDGED,
     IN_PROGRESS,
     RESOLVED,
+    WARDEN_REVIEW,
     CLOSED;
 
-    /** Allowed next states from this one. Any non-closed state can be closed directly. */
+    /**
+     * Allowed next states from this one. Office staff move work forward and
+     * forward it to the Warden; only a Warden can close a forwarded complaint.
+     */
     public boolean canTransitionTo(ComplaintStatus next) {
         return switch (this) {
-            case OPEN -> next == ACKNOWLEDGED || next == IN_PROGRESS || next == CLOSED;
-            case ACKNOWLEDGED -> next == IN_PROGRESS || next == RESOLVED || next == CLOSED;
-            case IN_PROGRESS -> next == RESOLVED || next == CLOSED;
-            case RESOLVED -> next == CLOSED;
+            case OPEN -> next == ACKNOWLEDGED || next == IN_PROGRESS || next == WARDEN_REVIEW;
+            case ACKNOWLEDGED -> next == IN_PROGRESS || next == RESOLVED || next == WARDEN_REVIEW;
+            case IN_PROGRESS -> next == RESOLVED || next == WARDEN_REVIEW;
+            case RESOLVED -> next == WARDEN_REVIEW;
+            case WARDEN_REVIEW -> next == CLOSED;
             case CLOSED -> false;
         };
     }

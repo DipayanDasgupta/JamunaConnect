@@ -200,6 +200,7 @@ h1, h2, h3, h4, h5 { letter-spacing: -0.02em; }
 .badge.status-ACKNOWLEDGED { background-color: #d97706 !important; }
 .badge.status-IN_PROGRESS { background-color: #2563eb !important; }
 .badge.status-RESOLVED { background-color: #059669 !important; }
+.badge.status-WARDEN_REVIEW { background-color: #7c3aed !important; }
 .badge.status-CLOSED { background-color: #64748b !important; }
 
 /* ---------- Auth ---------- */

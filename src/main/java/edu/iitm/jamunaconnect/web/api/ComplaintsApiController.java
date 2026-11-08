@@ -88,6 +88,16 @@ public class ComplaintsApiController {
     public ComplaintResponse patch(@PathVariable Long id,
                                    @Valid @RequestBody StatusUpdateRequest request,
                                    Authentication authentication) {
+        boolean warden = authentication != null && authentication.getAuthorities().stream()
+                .anyMatch(authority -> "ROLE_WARDEN".equals(authority.getAuthority()));
+        if (request.getStatus() == ComplaintStatus.CLOSED && !warden) {
+            throw new org.springframework.web.server.ResponseStatusException(HttpStatus.FORBIDDEN,
+                    "Only the Warden can close complaints");
+        }
+        if (request.getStatus() != ComplaintStatus.CLOSED && warden) {
+            throw new org.springframework.web.server.ResponseStatusException(HttpStatus.FORBIDDEN,
+                    "The Warden can only close complaints forwarded for approval");
+        }
         String changedBy = authentication == null ? "staff" : authentication.getName();
         return ComplaintResponse.from(complaints.changeStatus(id, request.getStatus(), changedBy));
     }

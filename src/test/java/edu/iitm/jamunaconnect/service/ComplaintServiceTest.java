@@ -78,13 +78,26 @@ class ComplaintServiceTest {
     }
 
     @Test
-    void openComplaintCanBeClosedDirectly() {
+    void openComplaintCanBeForwardedToWarden() {
         Complaint c = new Complaint();
         c.setId(11L);
         c.setStatus(ComplaintStatus.OPEN);
         when(complaints.findById(11L)).thenReturn(Optional.of(c));
 
-        service.changeStatus(11L, ComplaintStatus.CLOSED, "office");
+        service.changeStatus(11L, ComplaintStatus.WARDEN_REVIEW, "office");
+
+        assertThat(c.getStatus()).isEqualTo(ComplaintStatus.WARDEN_REVIEW);
+        verify(history, times(1)).save(any(ComplaintStatusHistory.class));
+    }
+
+    @Test
+    void forwardedComplaintCanBeClosedByWarden() {
+        Complaint c = new Complaint();
+        c.setId(12L);
+        c.setStatus(ComplaintStatus.WARDEN_REVIEW);
+        when(complaints.findById(12L)).thenReturn(Optional.of(c));
+
+        service.changeStatus(12L, ComplaintStatus.CLOSED, "warden");
 
         assertThat(c.getStatus()).isEqualTo(ComplaintStatus.CLOSED);
         verify(history, times(1)).save(any(ComplaintStatusHistory.class));

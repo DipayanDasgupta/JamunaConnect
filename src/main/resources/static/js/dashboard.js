@@ -62,6 +62,10 @@
     textFilter.addEventListener("input", applyFilters);
     applyFilters();
 
+    function statusLabel(status) {
+        return status === "WARDEN_REVIEW" ? "WARDEN REVIEW" : status;
+    }
+
     function adjustCounter(status, delta) {
         const cell = document.querySelector(`[data-count="${status}"]`);
         if (cell) {
@@ -79,7 +83,7 @@
         }
         const status = select.value;
         const badgeBefore = row.querySelector(".status-badge");
-        const previousStatus = badgeBefore ? badgeBefore.textContent.trim() : null;
+        const previousStatus = badgeBefore ? badgeBefore.dataset.status : null;
         button.disabled = true;
         try {
             const res = await fetch(`/api/complaints/${id}`, {
@@ -94,14 +98,19 @@
             }
             const updated = await res.json();
             const badge = row.querySelector(".status-badge");
-            badge.textContent = updated.status;
+            badge.textContent = statusLabel(updated.status);
+            badge.dataset.status = updated.status;
             badge.className = "badge text-white status-badge status-" + updated.status;
             row.classList.remove("table-warning");
             if (previousStatus && previousStatus !== updated.status) {
                 adjustCounter(previousStatus, -1);
                 adjustCounter(updated.status, 1);
             }
-            show("success", `Complaint #${id} moved to ${updated.status}. Timeline updated.`);
+            if (updated.status === "WARDEN_REVIEW") {
+                show("success", `Complaint #${id} forwarded to the Warden for approval.`);
+            } else {
+                show("success", `Complaint #${id} moved to ${statusLabel(updated.status)}. Timeline updated.`);
+            }
         } catch (err) {
             show("danger", "Network error while updating status.");
             console.error(err);

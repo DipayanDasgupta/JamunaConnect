@@ -26,15 +26,24 @@ public class StaffController {
 
     @GetMapping("/dashboard")
     public String dashboard(@RequestParam(name = "status", required = false) ComplaintStatus status,
-                            Model model) {
+                            Model model,
+                            org.springframework.security.core.Authentication authentication) {
+        boolean warden = authentication != null && authentication.getAuthorities().stream()
+                .anyMatch(authority -> "ROLE_WARDEN".equals(authority.getAuthority()));
+        model.addAttribute("isWarden", warden);
         model.addAttribute("complaints", complaints.list(java.util.Optional.ofNullable(status)));
         model.addAttribute("statuses", ComplaintStatus.values());
         java.util.Map<ComplaintStatus, java.util.List<ComplaintStatus>> transitions =
                 new java.util.EnumMap<>(ComplaintStatus.class);
         for (ComplaintStatus from : ComplaintStatus.values()) {
-            transitions.put(from, java.util.Arrays.stream(ComplaintStatus.values())
+            java.util.List<ComplaintStatus> moves = java.util.Arrays.stream(ComplaintStatus.values())
                     .filter(from::canTransitionTo)
-                    .toList());
+                    .filter(next -> warden ? next == ComplaintStatus.CLOSED : next != ComplaintStatus.CLOSED)
+                    .toList();
+            if (warden && from != ComplaintStatus.WARDEN_REVIEW) {
+                moves = java.util.List.of();
+            }
+            transitions.put(from, moves);
         }
         model.addAttribute("transitions", transitions);
         model.addAttribute("selectedStatus", status);
