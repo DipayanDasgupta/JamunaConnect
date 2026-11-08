@@ -26,14 +26,17 @@ public class MailNotificationService implements NotificationService {
     private final Optional<JavaMailSender> mailSender;
     private final String officeEmail;
     private final String escalationEmail;
+    private final String fromEmail;
 
     public MailNotificationService(
             Optional<JavaMailSender> mailSender,
             @Value("${app.office-email}") String officeEmail,
-            @Value("${app.escalation-email}") String escalationEmail) {
+            @Value("${app.escalation-email}") String escalationEmail,
+            @Value("${app.mail.from:}") String fromEmail) {
         this.mailSender = mailSender;
         this.officeEmail = officeEmail;
         this.escalationEmail = escalationEmail;
+        this.fromEmail = fromEmail;
     }
 
     @Override
@@ -80,6 +83,9 @@ public class MailNotificationService implements NotificationService {
         }
         try {
             SimpleMailMessage message = new SimpleMailMessage();
+            if (StringUtils.hasText(fromEmail)) {
+                message.setFrom(fromEmail);
+            }
             message.setTo(to);
             message.setSubject(subject);
             message.setText(body);
