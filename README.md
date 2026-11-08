@@ -9,7 +9,7 @@ one PostgreSQL database. Design doc: `design_doc_team59.pdf`.
 ## Stack
 
 - Java 21, Spring Boot 3.3, Maven
-- Thymeleaf + Bootstrap, Leaflet.js + GeoJSON for the campus map
+- Thymeleaf + Bootstrap, interactive SVG hostel map generated from the layout sheet
 - Spring Data JPA, Spring Security (three roles), Bean Validation
 - PostgreSQL with `pg_trgm` fuzzy search; Flyway migrations; H2 for fast local runs
 - JUnit 5 + Mockito (unit), Testcontainers (integration on real PostgreSQL)
@@ -20,7 +20,7 @@ one PostgreSQL database. Design doc: `design_doc_team59.pdf`.
 | Owner    | Module | Contents |
 |----------|--------|----------|
 | Dipayan  | A | Public pages: contacts, lookup, map, complaint form |
-| Dipayan  | B | `GET /api/rooms` fuzzy search + Leaflet map |
+| Dipayan  | B | `GET /api/rooms` fuzzy search + interactive hostel map |
 | Dipayan  | C | Staff dashboard, filters, status transitions |
 | Saathvik | D | Auth/RBAC, six-entity schema, Flyway, repositories |
 | Saathvik | E | Complaint/contacts API, validation, rate limit, state machine |

@@ -37,7 +37,7 @@ public class SecurityConfig {
                         "/", "/lookup", "/map", "/contacts", "/notices", "/emergency", "/wifi",
                         "/complaints/new", "/complaints/track",
                         "/api/rooms", "/api/contacts", "/api/notices", "/api/emergency",
-                        "/css/**", "/js/**", "/staff-assets/**", "/geo/**", "/images/**", "/favicon.ico",
+                        "/css/**", "/js/**", "/staff-assets/**", "/images/**", "/favicon.ico",
                         "/actuator/health", "/actuator/health/**", "/actuator/info")
                     .permitAll()
                 // Residents file complaints anonymously.

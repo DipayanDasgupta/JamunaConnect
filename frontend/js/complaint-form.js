@@ -18,6 +18,10 @@
     if (requestedCategory && [...categorySelect.options].some(o => o.value === requestedCategory)) {
         categorySelect.value = requestedCategory;
     }
+    const requestedRoom = new URLSearchParams(location.search).get("room");
+    if (requestedRoom) {
+        form.roomNumber.value = requestedRoom;
+    }
     toggleOther();
     const clientToken = (crypto.randomUUID ? crypto.randomUUID()
         : String(Date.now()) + Math.random().toString(16).slice(2));

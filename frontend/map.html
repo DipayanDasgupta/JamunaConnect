@@ -3,8 +3,7 @@
 <head>
     <meta charset="UTF-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1"/>
-    <title>Campus Map &middot; JamunaConnect</title>
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+    <title>Hostel Map &middot; JamunaConnect</title>
     <link rel="stylesheet" href="/css/app.css"/>
 </head>
 <body>
@@ -12,7 +11,7 @@
     <a class="brand" href="/">JamunaConnect</a>
     <a href="/contacts">Contacts</a>
     <a href="/lookup">Room Lookup</a>
-    <a href="/map">Campus Map</a>
+    <a href="/map">Hostel Map</a>
     <a href="/notices">Notices</a>
     <a href="/emergency">Emergency</a>
     <a href="/wifi">WiFi</a>
@@ -20,17 +19,76 @@
     <a href="/complaints/track">Track</a>
     <a href="/staff/login">Staff</a>
 </nav>
-<main>
-    <div class="page-head">
-        <h1>Jamuna campus map</h1>
-        <p>Click a block; the popup calls the same <code>/api/rooms</code> endpoint as
-            the search box, so both share one source of truth.</p>
+<main class="map-page-main">
+    <section class="hostel-map-head">
+        <div>
+            <p class="map-kicker">Jamuna Hostel &middot; interactive layout</p>
+            <h1>Jamuna hostel map</h1>
+            <p class="map-intro">A floor-by-floor view built from the hostel layout sheet.
+                Pick a floor, then click any room to see the residents on record.</p>
+        </div>
+        <div class="map-search-block">
+            <label for="map-room-search">Find a room</label>
+            <div class="map-search">
+                <span aria-hidden="true">⌕</span>
+                <input id="map-room-search" type="search" inputmode="numeric"
+                       placeholder="e.g. 254 or 4016" autocomplete="off"/>
+            </div>
+            <p class="map-search-hint">Press Enter to jump to the room.</p>
+        </div>
+    </section>
+
+    <div class="floor-tabs" role="tablist" aria-label="Select a floor">
+        <button type="button" class="floor-tab is-active" data-floor="1" role="tab" aria-selected="true"
+                style="--floor-color: #0f6b4f">
+            <span class="floor-tab-swatch"></span>
+            <span><strong>Ground</strong><small>Block A &middot; 80 rooms</small></span>
+        </button>
+        <button type="button" class="floor-tab" data-floor="2" role="tab" aria-selected="false"
+                style="--floor-color: #2563eb">
+            <span class="floor-tab-swatch"></span>
+            <span><strong>First</strong><small>Block B &middot; 90 rooms</small></span>
+        </button>
+        <button type="button" class="floor-tab" data-floor="3" role="tab" aria-selected="false"
+                style="--floor-color: #7c3aed">
+            <span class="floor-tab-swatch"></span>
+            <span><strong>Second</strong><small>Block C &middot; 90 rooms</small></span>
+        </button>
+        <button type="button" class="floor-tab" data-floor="4" role="tab" aria-selected="false"
+                style="--floor-color: #b45309">
+            <span class="floor-tab-swatch"></span>
+            <span><strong>Third</strong><small>Block D &middot; 90 rooms</small></span>
+        </button>
     </div>
-    <div id="map"></div>
+
+    <div class="hostel-map-grid">
+        <section class="hostel-map-card" aria-labelledby="map-caption">
+            <div class="map-card-head">
+                <div>
+                    <h2 id="map-caption">Floor plan</h2>
+                    <p id="map-floor-caption">Ground floor &middot; Block A + extension &middot; 80 rooms</p>
+                </div>
+                <div class="map-legend-inline" aria-label="Room status">
+                    <span><i class="legend-dot occupied"></i>Resident</span>
+                    <span><i class="legend-dot empty"></i>No resident</span>
+                    <span><i class="legend-dot facility"></i>Facility</span>
+                </div>
+            </div>
+            <div id="hostel-map" class="hostel-map" role="application"
+                 aria-label="Interactive Jamuna Hostel floor plan"></div>
+            <p class="map-scroll-hint">Swipe or scroll sideways to explore the full floor.</p>
+            <div class="map-legend">
+                <span><i class="legend-swatch main"></i>Main block</span>
+                <span><i class="legend-swatch ext"></i>Extension wing</span>
+                <span><i class="legend-marker"></i>Steps / gate</span>
+                <span class="map-legend-note">Layout: Phase 1 &middot; 2026&ndash;27</span>
+            </div>
+        </section>
+        <aside id="room-panel" class="room-panel" aria-live="polite"></aside>
+    </div>
 </main>
 <footer>JamunaConnect &middot; CS5013 Team 59</footer>
-<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-<script src="/js/map.js"></script>
+<script src="/js/hostel-map.js"></script>
 <script src="/js/app.js"></script>
 </body>
 </html>

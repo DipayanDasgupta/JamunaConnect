@@ -34,6 +34,18 @@ class ContentFeatureTest {
         mvc.perform(get("/notices")).andExpect(status().isOk());
         mvc.perform(get("/emergency")).andExpect(status().isOk());
         mvc.perform(get("/wifi")).andExpect(status().isOk());
+        mvc.perform(get("/map")).andExpect(status().isOk());
+    }
+
+    @Test
+    void hostelMapLoadsWithoutLeaflet() throws Exception {
+        String html = mvc.perform(get("/map"))
+                .andExpect(status().isOk())
+                .andExpect(content().string(org.hamcrest.Matchers.containsString("Jamuna hostel map")))
+                .andReturn().getResponse().getContentAsString();
+
+        assertThat(html).contains("hostel-map.js", "data-floor=\"1\"");
+        assertThat(html.toLowerCase()).doesNotContain("leaflet", "openstreetmap", "blocks.geojson");
     }
 
     @Test

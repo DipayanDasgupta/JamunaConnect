@@ -7,6 +7,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -29,6 +30,15 @@ class StaticAssetsTest {
         mvc.perform(get("/staff-assets/css/app.css"))
                 .andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith("text/css"));
+    }
+
+    @Test
+    void hostelMapScriptIsServedAnonymously() throws Exception {
+        String script = mvc.perform(get("/staff-assets/js/hostel-map.js"))
+                .andExpect(status().isOk())
+                .andReturn().getResponse().getContentAsString();
+
+        assertThat(script).contains("const FLOORS", "/api/rooms", "extRightTop");
     }
 
     @Test

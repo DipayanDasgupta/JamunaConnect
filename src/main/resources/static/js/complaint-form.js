@@ -22,6 +22,10 @@
     if (requestedCategory && [...categorySelect.options].some(o => o.value === requestedCategory)) {
         categorySelect.value = requestedCategory;
     }
+    const requestedRoom = new URLSearchParams(location.search).get("room");
+    if (requestedRoom) {
+        form.roomNumber.value = requestedRoom;
+    }
     toggleOther();
 
     function show(kind, message) {
